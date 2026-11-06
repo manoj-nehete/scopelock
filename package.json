@@ -1,0 +1,56 @@
+{
+  "name": "scopelock",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "tsc && tsc -p tsconfig.web.json && vite build",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.web.json",
+    "start": "node dist/cli.js",
+    "test": "node --test test/*.test.mjs",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "jsdom": "31.0.0",
+    "typescript": "7.0.2",
+    "vite": "8.3.6"
+  },
+  "description": "Local phase-wise scope and evidence tracking for coding agents",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manoj-nehete/scopelock.git"
+  },
+  "homepage": "https://github.com/manoj-nehete/scopelock#readme",
+  "bugs": {
+    "url": "https://github.com/manoj-nehete/scopelock/issues"
+  },
+  "bin": {
+    "scopelock": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "web-dist",
+    "docs",
+    "examples",
+    "PLAN.md",
+    "README.md",
+    "LICENSE",
+    "BUILD_STATUS.md",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "CONTRIBUTING.md"
+  ],
+  "license": "MIT"
+}

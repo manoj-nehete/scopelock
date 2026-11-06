@@ -1,0 +1,11 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {JSDOM,VirtualConsole} from 'jsdom';import {readFile,readdir,mkdtemp,rm} from 'node:fs/promises';import {join} from 'node:path';import {tmpdir} from 'node:os';import {Project} from '../dist/core.js';
+test('built React dashboard renders all eight views and a requirement detail',async()=>{
+ const root=await mkdtemp(join(tmpdir(),'scope-dom-'));let dom;try{const p=new Project(root);await p.init('DOM project');await p.import('# Phase P01: Base\n## REQ-001: Example\n- Acceptance: Works.\n');await p.confirm();const state=await p.view();const errors=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e.message));
+ dom=new JSDOM('<div id="root"></div>',{url:'http://127.0.0.1:4317',runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:vc});const w=dom.window;w.fetch=async()=>({ok:true,json:async()=>({state,token:'test'})});w.EventSource=class{addEventListener(){}close(){}};
+ const name=(await readdir('web-dist/assets')).find(n=>n.endsWith('.js'));w.eval(await readFile(join('web-dist/assets',name),'utf8'));
+ const wait=async(predicate)=>{for(let i=0;i<100;i++){if(predicate())return;await new Promise(r=>setTimeout(r,10));}throw Error('Timed out waiting for dashboard');};
+ await wait(()=>w.document.querySelector('nav'));assert.match(w.document.body.textContent,/A clear view of your build/);
+ const views=['Overview','Phases','Requirements','Checks & logs','Evidence','Activity','Scope review','Integrations'];for(const view of views){const b=[...w.document.querySelectorAll('nav button')].find(b=>b.textContent.includes(view));assert.ok(b);b.click();await wait(()=>w.document.querySelector('h1')?.textContent===(view==='Overview'?'A clear view of your build.':view));}
+ [...w.document.querySelectorAll('nav button')].find(b=>b.textContent.includes('Requirements')).click();await wait(()=>w.document.querySelector('table'));[...w.document.querySelectorAll('table button')][0].click();await wait(()=>w.document.querySelector('.detail'));assert.match(w.document.querySelector('.detail').textContent,/REQ-001-AC1/);assert.deepEqual(errors,[]);
+ }finally{dom?.window.close();await rm(root,{recursive:true,force:true});}
+});

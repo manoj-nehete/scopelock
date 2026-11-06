@@ -1,0 +1,7 @@
+node_modules/
+.scopelock/
+*.tmp
+*.tgz
+demo-workspace/
+.DS_Store
+

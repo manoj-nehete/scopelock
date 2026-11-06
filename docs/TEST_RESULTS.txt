@@ -1,0 +1,45 @@
+
+> scopelock@0.1.0 test
+> node --test test/*.test.mjs
+
+✔ Antigravity real fixture session workflow and exit gate (1232.308459ms)
+✔ Claude Code adapter fixture session workflow and exit gate (1223.97025ms)
+✔ Codex adapter fixture session workflow and exit gate (1257.690541ms)
+✔ Cross-agent handoff: start in Claude Code, continue in Codex, finish phase in Antigravity (1424.477ms)
+✔ built React dashboard renders all eight views and a requirement detail (294.924166ms)
+✔ Windows path and execution compatibility logic (176.628291ms)
+✔ confirmed source is protected; implementation is not verification (172.667417ms)
+✔ invalid graph proposal does not alter scope (187.599791ms)
+✔ duplicate requirements rejected without corrupting snapshot (20.925333ms)
+✔ unapproved commands cannot run (102.811084ms)
+✔ passing check verifies first phase and permits dependent phase (185.961417ms)
+✔ failure and later regression stay failed (499.131375ms)
+✔ code change makes previous pass stale (175.953417ms)
+✔ file mutation during check cannot verify the modified code (141.272541ms)
+✔ agent evidence cannot impersonate human criterion (47.738541ms)
+✔ overrides permit activation but never pass exit criteria (37.431125ms)
+✔ scope decision invalidates evidence and preserves history (57.76475ms)
+✔ simultaneous writes retain both events (90.917792ms)
+✔ timeout is an error, never a pass (194.580959ms)
+✔ logs redact common secret patterns (124.503042ms)
+✔ backup restores scope and evidence into new project (43.556542ms)
+✔ live lock recovery refused; corrupt state recovers previous snapshot (41.136792ms)
+✔ claude-code install is repeatable; uninstall preserves existing settings (65.254333ms)
+✔ codex install is repeatable; uninstall preserves existing settings (65.86175ms)
+✔ antigravity install is repeatable; uninstall preserves existing settings (63.142167ms)
+✔ SDK MCP handshake and tool discovery work (179.089ms)
+✔ dashboard serves state and rejects unauthorized mutations (50.525875ms)
+✔ CLI clean workspace workflow is runnable (242.453208ms)
+✔ copied manual evidence becomes stale if artifact changes (38.830834ms)
+✔ backup retains original activity history (38.813209ms)
+✔ SSE sends a current snapshot and later revisions (1033.9815ms)
+✔ MCP clients continue the same project and cannot accept scope (326.542541ms)
+✔ schema-v1 migration preserves source and original backup (5.669334ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4351.474833

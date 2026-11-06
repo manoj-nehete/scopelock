@@ -1,0 +1,2216 @@
+{
+  "format": "scopelock-backup-v1",
+  "state": {
+    "schemaVersion": 2,
+    "id": "PROJECT-7067edc8-d355-47e1-9db6-11eca87cd960",
+    "name": "ScopeLock development",
+    "revision": 82,
+    "scopeRevision": 1,
+    "confirmed": true,
+    "source": "# ScopeLock implementation requirements\n\nDerived from the agreed PLAN.md. These IDs track ScopeLock itself. Each acceptance statement is the named observable behavior; detailed semantics are in SPEC.md. No entry is claimed verified merely by being listed.\n\n# Phase P01: Specification and representative fixtures\n\n## REQ-001: Define schemas, IDs, status transitions, evidence eligibility, and freshness rules.\n- Acceptance: Define schemas, IDs, status transitions, evidence eligibility, and freshness rules.\n\n## REQ-002: Specify Markdown input: one explicit requirement heading per item; preserve source line references. Do not imply automatic AI extraction.\n- Acceptance: Specify Markdown input: one explicit requirement heading per item; preserve source line references. Do not imply automatic AI extraction.\n\n## REQ-003: Define CLI commands, MCP contracts, dashboard routes, and scope approval behavior.\n- Acceptance: Define CLI commands, MCP contracts, dashboard routes, and scope approval behavior.\n\n## REQ-004: Sketch overview, phase detail, requirement detail, checks, logs, and scope-review views.\n- Acceptance: Sketch overview, phase detail, requirement detail, checks, logs, and scope-review views.\n\n## REQ-005: Prepare a tiny example application with five requirements across at least two phases, including an intentional failure and a manual criterion.\n- Acceptance: Prepare a tiny example application with five requirements across at least two phases, including an intentional failure and a manual criterion.\n\n## REQ-006: Assign implementation requirement IDs and map each to a phase and acceptance criteria.\n- Acceptance: Assign implementation requirement IDs and map each to a phase and acceptance criteria.\n\n# Phase P02: Reliable shared engine and persistence\n\n## REQ-007: Implement validated records, stable IDs, referential integrity, and schema versioning.\n- Acceptance: Implement validated records, stable IDs, referential integrity, and schema versioning.\n\n## REQ-008: Implement source preservation, reviewed scope baselines, and explicit change decisions.\n- Acceptance: Implement source preservation, reviewed scope baselines, and explicit change decisions.\n\n## REQ-009: Implement atomic persistence, revision conflicts, cross-process locking, and crash recovery.\n- Acceptance: Implement atomic persistence, revision conflicts, cross-process locking, and crash recovery.\n\n## REQ-010: Ensure state and event records recover consistently after interrupted mutations.\n- Acceptance: Ensure state and event records recover consistently after interrupted mutations.\n\n## REQ-011: Preserve history and provide portable backup/export and validated restore.\n- Acceptance: Preserve history and provide portable backup/export and validated restore.\n\n## REQ-012: Reject dependency cycles, invalid references, and malformed imported state.\n- Acceptance: Reject dependency cycles, invalid references, and malformed imported state.\n\n## REQ-013: Provide actionable errors without silently discarding data.\n- Acceptance: Provide actionable errors without silently discarding data.\n\n# Phase P03: CLI and local project workflow\n\n## REQ-014: Implement initialization, Markdown import, review, and scope confirmation.\n- Acceptance: Implement initialization, Markdown import, review, and scope confirmation.\n\n## REQ-015: Implement requirement inspection, implementation updates, blockers, and evidence registration.\n- Acceptance: Implement requirement inspection, implementation updates, blockers, and evidence registration.\n\n## REQ-016: Implement scope-change proposal, diff, acceptance, and rejection.\n- Acceptance: Implement scope-change proposal, diff, acceptance, and rejection.\n\n## REQ-017: Implement status, JSON output, and Markdown report export.\n- Acceptance: Implement status, JSON output, and Markdown report export.\n\n## REQ-018: Implement `doctor` for invalid state, missing files, unavailable executables, and configuration problems.\n- Acceptance: Implement `doctor` for invalid state, missing files, unavailable executables, and configuration problems.\n\n## REQ-019: Set clear exit codes and validate paths within the selected project.\n- Acceptance: Set clear exit codes and validate paths within the selected project.\n\n# Phase P04: Phase planning, gates, and handoff\n\n## REQ-020: Create, order, inspect, and activate phases; map requirements to their owning phase.\n- Acceptance: Create, order, inspect, and activate phases; map requirements to their owning phase.\n\n## REQ-021: Validate phase and requirement dependencies and expose blockers.\n- Acceptance: Validate phase and requirement dependencies and expose blockers.\n\n## REQ-022: Present active-phase context with project-wide constraints and relevant dependencies.\n- Acceptance: Present active-phase context with project-wide constraints and relevant dependencies.\n\n## REQ-023: Evaluate required phase exit criteria using registered evidence; connect to executable checks in P06.\n- Acceptance: Evaluate required phase exit criteria using registered evidence; connect to executable checks in P06.\n\n## REQ-024: Record continuation overrides with user reason and unmet criteria intact.\n- Acceptance: Record continuation overrides with user reason and unmet criteria intact.\n\n## REQ-025: Generate a concise pause/resume handoff from recorded state.\n- Acceptance: Generate a concise pause/resume handoff from recorded state.\n\n## REQ-026: Support project-wide checks and later-phase regression impact.\n- Acceptance: Support project-wide checks and later-phase regression impact.\n\n# Phase P05: Local graphical dashboard\n\n## REQ-027: Overview: separate implementation and verification counts, active phase, failures, and blockers.\n- Acceptance: Overview: separate implementation and verification counts, active phase, failures, and blockers.\n\n## REQ-028: Phase roadmap/detail: goals, dependencies, requirements, exit criteria, overrides, and verification.\n- Acceptance: Phase roadmap/detail: goals, dependencies, requirements, exit criteria, overrides, and verification.\n\n## REQ-029: Requirement detail: source, acceptance criteria, history, evidence, and affected files.\n- Acceptance: Requirement detail: source, acceptance criteria, history, evidence, and affected files.\n\n## REQ-030: Check and evidence views: execution state, results, duration, code state, and artifacts.\n- Acceptance: Check and evidence views: execution state, results, duration, code state, and artifacts.\n\n## REQ-031: Activity timeline and searchable/filterable recorded logs.\n- Acceptance: Activity timeline and searchable/filterable recorded logs.\n\n## REQ-032: Scope-change review with explicit accept/reject controls.\n- Acceptance: Scope-change review with explicit accept/reject controls.\n\n## REQ-033: Integration view: configured status, last connection check, and last recorded activity; do not imply a continuously connected agent.\n- Acceptance: Integration view: configured status, last connection check, and last recorded activity; do not imply a continuously connected agent.\n\n## REQ-034: Live updates with reconnect recovery and consistent snapshot loading.\n- Acceptance: Live updates with reconnect recovery and consistent snapshot loading.\n\n## REQ-035: Filters by phase, requirement, result, reporting agent, and date where applicable.\n- Acceptance: Filters by phase, requirement, result, reporting agent, and date where applicable.\n\n## REQ-036: Keyboard access, labelled controls, status text alongside colors, and readable empty/error states.\n- Acceptance: Keyboard access, labelled controls, status text alongside colors, and readable empty/error states.\n\n## REQ-037: Bind locally, validate request origins and host headers, protect mutations against cross-site requests, and render logs/Markdown as untrusted content.\n- Acceptance: Bind locally, validate request origins and host headers, protect mutations against cross-site requests, and render logs/Markdown as untrusted content.\n\n# Phase P06: Checks, evidence, logs, and regression detection\n\n## REQ-038: Run explicitly user-configured commands with argument arrays, working directories, timeouts, and cancellation.\n- Acceptance: Run explicitly user-configured commands with argument arrays, working directories, timeouts, and cancellation.\n\n## REQ-039: Do not execute commands imported from a requirements document automatically. Mark check-definition changes for user review before execution.\n- Acceptance: Do not execute commands imported from a requirements document automatically. Mark check-definition changes for user review before execution.\n\n## REQ-040: Capture exit code, duration, output, code-state fingerprint, scope revision, and linked criteria.\n- Acceptance: Capture exit code, duration, output, code-state fingerprint, scope revision, and linked criteria.\n\n## REQ-041: Stream bounded output to the dashboard and retain configurable log history.\n- Acceptance: Stream bounded output to the dashboard and retain configurable log history.\n\n## REQ-042: Redact common secret patterns before storing or streaming output; never collect full environment files. Clearly state that redaction is incomplete.\n- Acceptance: Redact common secret patterns before storing or streaming output; never collect full environment files. Clearly state that redaction is incomplete.\n\n## REQ-043: Attach local screenshots, test reports, file references, and explicit human verification notes.\n- Acceptance: Attach local screenshots, test reports, file references, and explicit human verification notes.\n\n## REQ-044: Label evidence origin and distinguish a successful process exit from proof of broader feature correctness.\n- Acceptance: Label evidence origin and distinguish a successful process exit from proof of broader feature correctness.\n\n## REQ-045: Detect stale evidence and regressions; recalculate affected phase verification.\n- Acceptance: Detect stale evidence and regressions; recalculate affected phase verification.\n\n## REQ-046: Provide log clearing/retention controls; retain an event noting removal without retaining removed content.\n- Acceptance: Provide log clearing/retention controls; retain an event noting removal without retaining removed content.\n\n## REQ-047: Make health checks report missing or removed evidence accurately.\n- Acceptance: Make health checks report missing or removed evidence accurately.\n\n# Phase P07: Local MCP interface\n\n## REQ-048: Expose tools for reading scope, phases, requirements, blockers, and next eligible tasks.\n- Acceptance: Expose tools for reading scope, phases, requirements, blockers, and next eligible tasks.\n\n## REQ-049: Expose implementation updates, evidence submission, scope-change proposals, and handoff retrieval.\n- Acceptance: Expose implementation updates, evidence submission, scope-change proposals, and handoff retrieval.\n\n## REQ-050: Expose check execution only for previously reviewed definitions.\n- Acceptance: Expose check execution only for previously reviewed definitions.\n\n## REQ-051: Reuse engine validation and revision rules; restrict operations to the selected project.\n- Acceptance: Reuse engine validation and revision rules; restrict operations to the selected project.\n\n## REQ-052: Return compact structured responses and useful errors.\n- Acceptance: Return compact structured responses and useful errors.\n\n## REQ-053: Exclude acceptance of scope changes and user-only overrides from agent-facing tools.\n- Acceptance: Exclude acceptance of scope changes and user-only overrides from agent-facing tools.\n\n## REQ-054: Bound tool output and provide references for large logs instead of inserting full output into agent context.\n- Acceptance: Bound tool output and provide references for large logs instead of inserting full output into agent context.\n\n# Phase P08: Claude Code adapter\n\n## REQ-055: Verify current official instructions and MCP configuration behavior.\n- Acceptance: Verify current official instructions and MCP configuration behavior.\n\n## REQ-056: Install marked project guidance and local MCP configuration safely.\n- Acceptance: Install marked project guidance and local MCP configuration safely.\n\n## REQ-057: Explain the active-phase \u2192 requirement \u2192 implementation \u2192 evidence workflow.\n- Acceptance: Explain the active-phase \u2192 requirement \u2192 implementation \u2192 evidence workflow.\n\n## REQ-058: Preserve existing instructions/settings and support idempotent installation and safe uninstall.\n- Acceptance: Preserve existing instructions/settings and support idempotent installation and safe uninstall.\n\n## REQ-059: Add connection diagnostics and document permissions/restart requirements.\n- Acceptance: Add connection diagnostics and document permissions/restart requirements.\n\n## REQ-060: Run a real session against the fixture and record target version and surface.\n- Acceptance: Run a real session against the fixture and record target version and surface.\n\n# Phase P09: Codex adapter\n\n## REQ-061: Verify current official project-instruction and MCP configuration behavior.\n- Acceptance: Verify current official project-instruction and MCP configuration behavior.\n\n## REQ-062: Install marked `AGENTS.md` guidance and supported local MCP configuration without replacing existing content.\n- Acceptance: Install marked `AGENTS.md` guidance and supported local MCP configuration without replacing existing content.\n\n## REQ-063: Add connection diagnostics, permissions guidance, and safe uninstall.\n- Acceptance: Add connection diagnostics, permissions guidance, and safe uninstall.\n\n## REQ-064: Run the same fixture workflow used for Claude Code.\n- Acceptance: Run the same fixture workflow used for Claude Code.\n\n## REQ-065: Record tested Codex version and execution surface; document any surface-specific limitations.\n- Acceptance: Record tested Codex version and execution surface; document any surface-specific limitations.\n\n# Phase P10: Antigravity adapter\n\n## REQ-066: Verify current official rules/skills and MCP configuration behavior; do not assume paths from other tools.\n- Acceptance: Verify current official rules/skills and MCP configuration behavior; do not assume paths from other tools.\n\n## REQ-067: Install appropriate marked instructions and supported local MCP configuration.\n- Acceptance: Install appropriate marked instructions and supported local MCP configuration.\n\n## REQ-068: Add connection diagnostics, permissions guidance, and safe uninstall.\n- Acceptance: Add connection diagnostics, permissions guidance, and safe uninstall.\n\n## REQ-069: Run the same fixture workflow and record tested version and execution surface.\n- Acceptance: Run the same fixture workflow and record tested version and execution surface.\n\n# Phase P11: Cross-agent and cross-platform validation\n\n## REQ-070: Start work in one agent and continue in the other two without reimporting or duplicating requirements.\n- Acceptance: Start work in one agent and continue in the other two without reimporting or duplicating requirements.\n\n## REQ-071: Confirm all interfaces display identical scope revisions, phase state, and results.\n- Acceptance: Confirm all interfaces display identical scope revisions, phase state, and results.\n\n## REQ-072: Verify a failed earlier-phase check remains visible after advancing to a later phase.\n- Acceptance: Verify a failed earlier-phase check remains visible after advancing to a later phase.\n\n## REQ-073: Verify a scope proposal does not alter the confirmed baseline without explicit user action.\n- Acceptance: Verify a scope proposal does not alter the confirmed baseline without explicit user action.\n\n## REQ-074: Exercise concurrent updates, interrupted writes, missing evidence, stale evidence, and dashboard reconnect.\n- Acceptance: Exercise concurrent updates, interrupted writes, missing evidence, stale evidence, and dashboard reconnect.\n\n## REQ-075: Test CLI, local server, and installation behavior on Windows, macOS, and Linux through available CI and real environments.\n- Acceptance: Test CLI, local server, and installation behavior on Windows, macOS, and Linux through available CI and real environments.\n\n## REQ-076: Test representative secret redaction, untrusted log rendering, path handling, and local request protections.\n- Acceptance: Test representative secret redaction, untrusted log rendering, path handling, and local request protections.\n\n## REQ-077: Publish an integration matrix separating automated contract checks from real-agent sessions.\n- Acceptance: Publish an integration matrix separating automated contract checks from real-agent sessions.\n\n# Phase P12: Documentation, packaging, and open-source release\n\n## REQ-078: Add license, README, contribution guide, security-reporting guidance, and issue templates.\n- Acceptance: Add license, README, contribution guide, security-reporting guidance, and issue templates.\n\n## REQ-079: Document install, five-minute example, dashboard, phase planning, checks, evidence, backups, and uninstall.\n- Acceptance: Document install, five-minute example, dashboard, phase planning, checks, evidence, backups, and uninstall.\n\n## REQ-080: Document all three adapters, tested versions, configuration limits, and agent permission considerations.\n- Acceptance: Document all three adapters, tested versions, configuration limits, and agent permission considerations.\n\n## REQ-081: Explain the visibility boundary: ScopeLock records its own executions and submitted events, not every private conversation or agent action.\n- Acceptance: Explain the visibility boundary: ScopeLock records its own executions and submitted events, not every private conversation or agent action.\n\n## REQ-082: Add public-package build, release checks, changelog, and documentation site.\n- Acceptance: Add public-package build, release checks, changelog, and documentation site.\n\n## REQ-083: Use ScopeLock to track its own requirements and attach final phase reports.\n- Acceptance: Use ScopeLock to track its own requirements and attach final phase reports.\n\n## REQ-084: Test a clean package installation against the example without a paid service dependency.\n- Acceptance: Test a clean package installation against the example without a paid service dependency.\n\n## REQ-085: Publish source and package only after the release gates pass and the destination accounts are available.\n- Acceptance: Publish source and package only after the release gates pass and the destination accounts are available.\n",
+    "scopeHistory": [
+      {
+        "revision": 1,
+        "source": "# ScopeLock implementation requirements\n\nDerived from the agreed PLAN.md. These IDs track ScopeLock itself. Each acceptance statement is the named observable behavior; detailed semantics are in SPEC.md. No entry is claimed verified merely by being listed.\n\n# Phase P01: Specification and representative fixtures\n\n## REQ-001: Define schemas, IDs, status transitions, evidence eligibility, and freshness rules.\n- Acceptance: Define schemas, IDs, status transitions, evidence eligibility, and freshness rules.\n\n## REQ-002: Specify Markdown input: one explicit requirement heading per item; preserve source line references. Do not imply automatic AI extraction.\n- Acceptance: Specify Markdown input: one explicit requirement heading per item; preserve source line references. Do not imply automatic AI extraction.\n\n## REQ-003: Define CLI commands, MCP contracts, dashboard routes, and scope approval behavior.\n- Acceptance: Define CLI commands, MCP contracts, dashboard routes, and scope approval behavior.\n\n## REQ-004: Sketch overview, phase detail, requirement detail, checks, logs, and scope-review views.\n- Acceptance: Sketch overview, phase detail, requirement detail, checks, logs, and scope-review views.\n\n## REQ-005: Prepare a tiny example application with five requirements across at least two phases, including an intentional failure and a manual criterion.\n- Acceptance: Prepare a tiny example application with five requirements across at least two phases, including an intentional failure and a manual criterion.\n\n## REQ-006: Assign implementation requirement IDs and map each to a phase and acceptance criteria.\n- Acceptance: Assign implementation requirement IDs and map each to a phase and acceptance criteria.\n\n# Phase P02: Reliable shared engine and persistence\n\n## REQ-007: Implement validated records, stable IDs, referential integrity, and schema versioning.\n- Acceptance: Implement validated records, stable IDs, referential integrity, and schema versioning.\n\n## REQ-008: Implement source preservation, reviewed scope baselines, and explicit change decisions.\n- Acceptance: Implement source preservation, reviewed scope baselines, and explicit change decisions.\n\n## REQ-009: Implement atomic persistence, revision conflicts, cross-process locking, and crash recovery.\n- Acceptance: Implement atomic persistence, revision conflicts, cross-process locking, and crash recovery.\n\n## REQ-010: Ensure state and event records recover consistently after interrupted mutations.\n- Acceptance: Ensure state and event records recover consistently after interrupted mutations.\n\n## REQ-011: Preserve history and provide portable backup/export and validated restore.\n- Acceptance: Preserve history and provide portable backup/export and validated restore.\n\n## REQ-012: Reject dependency cycles, invalid references, and malformed imported state.\n- Acceptance: Reject dependency cycles, invalid references, and malformed imported state.\n\n## REQ-013: Provide actionable errors without silently discarding data.\n- Acceptance: Provide actionable errors without silently discarding data.\n\n# Phase P03: CLI and local project workflow\n\n## REQ-014: Implement initialization, Markdown import, review, and scope confirmation.\n- Acceptance: Implement initialization, Markdown import, review, and scope confirmation.\n\n## REQ-015: Implement requirement inspection, implementation updates, blockers, and evidence registration.\n- Acceptance: Implement requirement inspection, implementation updates, blockers, and evidence registration.\n\n## REQ-016: Implement scope-change proposal, diff, acceptance, and rejection.\n- Acceptance: Implement scope-change proposal, diff, acceptance, and rejection.\n\n## REQ-017: Implement status, JSON output, and Markdown report export.\n- Acceptance: Implement status, JSON output, and Markdown report export.\n\n## REQ-018: Implement `doctor` for invalid state, missing files, unavailable executables, and configuration problems.\n- Acceptance: Implement `doctor` for invalid state, missing files, unavailable executables, and configuration problems.\n\n## REQ-019: Set clear exit codes and validate paths within the selected project.\n- Acceptance: Set clear exit codes and validate paths within the selected project.\n\n# Phase P04: Phase planning, gates, and handoff\n\n## REQ-020: Create, order, inspect, and activate phases; map requirements to their owning phase.\n- Acceptance: Create, order, inspect, and activate phases; map requirements to their owning phase.\n\n## REQ-021: Validate phase and requirement dependencies and expose blockers.\n- Acceptance: Validate phase and requirement dependencies and expose blockers.\n\n## REQ-022: Present active-phase context with project-wide constraints and relevant dependencies.\n- Acceptance: Present active-phase context with project-wide constraints and relevant dependencies.\n\n## REQ-023: Evaluate required phase exit criteria using registered evidence; connect to executable checks in P06.\n- Acceptance: Evaluate required phase exit criteria using registered evidence; connect to executable checks in P06.\n\n## REQ-024: Record continuation overrides with user reason and unmet criteria intact.\n- Acceptance: Record continuation overrides with user reason and unmet criteria intact.\n\n## REQ-025: Generate a concise pause/resume handoff from recorded state.\n- Acceptance: Generate a concise pause/resume handoff from recorded state.\n\n## REQ-026: Support project-wide checks and later-phase regression impact.\n- Acceptance: Support project-wide checks and later-phase regression impact.\n\n# Phase P05: Local graphical dashboard\n\n## REQ-027: Overview: separate implementation and verification counts, active phase, failures, and blockers.\n- Acceptance: Overview: separate implementation and verification counts, active phase, failures, and blockers.\n\n## REQ-028: Phase roadmap/detail: goals, dependencies, requirements, exit criteria, overrides, and verification.\n- Acceptance: Phase roadmap/detail: goals, dependencies, requirements, exit criteria, overrides, and verification.\n\n## REQ-029: Requirement detail: source, acceptance criteria, history, evidence, and affected files.\n- Acceptance: Requirement detail: source, acceptance criteria, history, evidence, and affected files.\n\n## REQ-030: Check and evidence views: execution state, results, duration, code state, and artifacts.\n- Acceptance: Check and evidence views: execution state, results, duration, code state, and artifacts.\n\n## REQ-031: Activity timeline and searchable/filterable recorded logs.\n- Acceptance: Activity timeline and searchable/filterable recorded logs.\n\n## REQ-032: Scope-change review with explicit accept/reject controls.\n- Acceptance: Scope-change review with explicit accept/reject controls.\n\n## REQ-033: Integration view: configured status, last connection check, and last recorded activity; do not imply a continuously connected agent.\n- Acceptance: Integration view: configured status, last connection check, and last recorded activity; do not imply a continuously connected agent.\n\n## REQ-034: Live updates with reconnect recovery and consistent snapshot loading.\n- Acceptance: Live updates with reconnect recovery and consistent snapshot loading.\n\n## REQ-035: Filters by phase, requirement, result, reporting agent, and date where applicable.\n- Acceptance: Filters by phase, requirement, result, reporting agent, and date where applicable.\n\n## REQ-036: Keyboard access, labelled controls, status text alongside colors, and readable empty/error states.\n- Acceptance: Keyboard access, labelled controls, status text alongside colors, and readable empty/error states.\n\n## REQ-037: Bind locally, validate request origins and host headers, protect mutations against cross-site requests, and render logs/Markdown as untrusted content.\n- Acceptance: Bind locally, validate request origins and host headers, protect mutations against cross-site requests, and render logs/Markdown as untrusted content.\n\n# Phase P06: Checks, evidence, logs, and regression detection\n\n## REQ-038: Run explicitly user-configured commands with argument arrays, working directories, timeouts, and cancellation.\n- Acceptance: Run explicitly user-configured commands with argument arrays, working directories, timeouts, and cancellation.\n\n## REQ-039: Do not execute commands imported from a requirements document automatically. Mark check-definition changes for user review before execution.\n- Acceptance: Do not execute commands imported from a requirements document automatically. Mark check-definition changes for user review before execution.\n\n## REQ-040: Capture exit code, duration, output, code-state fingerprint, scope revision, and linked criteria.\n- Acceptance: Capture exit code, duration, output, code-state fingerprint, scope revision, and linked criteria.\n\n## REQ-041: Stream bounded output to the dashboard and retain configurable log history.\n- Acceptance: Stream bounded output to the dashboard and retain configurable log history.\n\n## REQ-042: Redact common secret patterns before storing or streaming output; never collect full environment files. Clearly state that redaction is incomplete.\n- Acceptance: Redact common secret patterns before storing or streaming output; never collect full environment files. Clearly state that redaction is incomplete.\n\n## REQ-043: Attach local screenshots, test reports, file references, and explicit human verification notes.\n- Acceptance: Attach local screenshots, test reports, file references, and explicit human verification notes.\n\n## REQ-044: Label evidence origin and distinguish a successful process exit from proof of broader feature correctness.\n- Acceptance: Label evidence origin and distinguish a successful process exit from proof of broader feature correctness.\n\n## REQ-045: Detect stale evidence and regressions; recalculate affected phase verification.\n- Acceptance: Detect stale evidence and regressions; recalculate affected phase verification.\n\n## REQ-046: Provide log clearing/retention controls; retain an event noting removal without retaining removed content.\n- Acceptance: Provide log clearing/retention controls; retain an event noting removal without retaining removed content.\n\n## REQ-047: Make health checks report missing or removed evidence accurately.\n- Acceptance: Make health checks report missing or removed evidence accurately.\n\n# Phase P07: Local MCP interface\n\n## REQ-048: Expose tools for reading scope, phases, requirements, blockers, and next eligible tasks.\n- Acceptance: Expose tools for reading scope, phases, requirements, blockers, and next eligible tasks.\n\n## REQ-049: Expose implementation updates, evidence submission, scope-change proposals, and handoff retrieval.\n- Acceptance: Expose implementation updates, evidence submission, scope-change proposals, and handoff retrieval.\n\n## REQ-050: Expose check execution only for previously reviewed definitions.\n- Acceptance: Expose check execution only for previously reviewed definitions.\n\n## REQ-051: Reuse engine validation and revision rules; restrict operations to the selected project.\n- Acceptance: Reuse engine validation and revision rules; restrict operations to the selected project.\n\n## REQ-052: Return compact structured responses and useful errors.\n- Acceptance: Return compact structured responses and useful errors.\n\n## REQ-053: Exclude acceptance of scope changes and user-only overrides from agent-facing tools.\n- Acceptance: Exclude acceptance of scope changes and user-only overrides from agent-facing tools.\n\n## REQ-054: Bound tool output and provide references for large logs instead of inserting full output into agent context.\n- Acceptance: Bound tool output and provide references for large logs instead of inserting full output into agent context.\n\n# Phase P08: Claude Code adapter\n\n## REQ-055: Verify current official instructions and MCP configuration behavior.\n- Acceptance: Verify current official instructions and MCP configuration behavior.\n\n## REQ-056: Install marked project guidance and local MCP configuration safely.\n- Acceptance: Install marked project guidance and local MCP configuration safely.\n\n## REQ-057: Explain the active-phase \u2192 requirement \u2192 implementation \u2192 evidence workflow.\n- Acceptance: Explain the active-phase \u2192 requirement \u2192 implementation \u2192 evidence workflow.\n\n## REQ-058: Preserve existing instructions/settings and support idempotent installation and safe uninstall.\n- Acceptance: Preserve existing instructions/settings and support idempotent installation and safe uninstall.\n\n## REQ-059: Add connection diagnostics and document permissions/restart requirements.\n- Acceptance: Add connection diagnostics and document permissions/restart requirements.\n\n## REQ-060: Run a real session against the fixture and record target version and surface.\n- Acceptance: Run a real session against the fixture and record target version and surface.\n\n# Phase P09: Codex adapter\n\n## REQ-061: Verify current official project-instruction and MCP configuration behavior.\n- Acceptance: Verify current official project-instruction and MCP configuration behavior.\n\n## REQ-062: Install marked `AGENTS.md` guidance and supported local MCP configuration without replacing existing content.\n- Acceptance: Install marked `AGENTS.md` guidance and supported local MCP configuration without replacing existing content.\n\n## REQ-063: Add connection diagnostics, permissions guidance, and safe uninstall.\n- Acceptance: Add connection diagnostics, permissions guidance, and safe uninstall.\n\n## REQ-064: Run the same fixture workflow used for Claude Code.\n- Acceptance: Run the same fixture workflow used for Claude Code.\n\n## REQ-065: Record tested Codex version and execution surface; document any surface-specific limitations.\n- Acceptance: Record tested Codex version and execution surface; document any surface-specific limitations.\n\n# Phase P10: Antigravity adapter\n\n## REQ-066: Verify current official rules/skills and MCP configuration behavior; do not assume paths from other tools.\n- Acceptance: Verify current official rules/skills and MCP configuration behavior; do not assume paths from other tools.\n\n## REQ-067: Install appropriate marked instructions and supported local MCP configuration.\n- Acceptance: Install appropriate marked instructions and supported local MCP configuration.\n\n## REQ-068: Add connection diagnostics, permissions guidance, and safe uninstall.\n- Acceptance: Add connection diagnostics, permissions guidance, and safe uninstall.\n\n## REQ-069: Run the same fixture workflow and record tested version and execution surface.\n- Acceptance: Run the same fixture workflow and record tested version and execution surface.\n\n# Phase P11: Cross-agent and cross-platform validation\n\n## REQ-070: Start work in one agent and continue in the other two without reimporting or duplicating requirements.\n- Acceptance: Start work in one agent and continue in the other two without reimporting or duplicating requirements.\n\n## REQ-071: Confirm all interfaces display identical scope revisions, phase state, and results.\n- Acceptance: Confirm all interfaces display identical scope revisions, phase state, and results.\n\n## REQ-072: Verify a failed earlier-phase check remains visible after advancing to a later phase.\n- Acceptance: Verify a failed earlier-phase check remains visible after advancing to a later phase.\n\n## REQ-073: Verify a scope proposal does not alter the confirmed baseline without explicit user action.\n- Acceptance: Verify a scope proposal does not alter the confirmed baseline without explicit user action.\n\n## REQ-074: Exercise concurrent updates, interrupted writes, missing evidence, stale evidence, and dashboard reconnect.\n- Acceptance: Exercise concurrent updates, interrupted writes, missing evidence, stale evidence, and dashboard reconnect.\n\n## REQ-075: Test CLI, local server, and installation behavior on Windows, macOS, and Linux through available CI and real environments.\n- Acceptance: Test CLI, local server, and installation behavior on Windows, macOS, and Linux through available CI and real environments.\n\n## REQ-076: Test representative secret redaction, untrusted log rendering, path handling, and local request protections.\n- Acceptance: Test representative secret redaction, untrusted log rendering, path handling, and local request protections.\n\n## REQ-077: Publish an integration matrix separating automated contract checks from real-agent sessions.\n- Acceptance: Publish an integration matrix separating automated contract checks from real-agent sessions.\n\n# Phase P12: Documentation, packaging, and open-source release\n\n## REQ-078: Add license, README, contribution guide, security-reporting guidance, and issue templates.\n- Acceptance: Add license, README, contribution guide, security-reporting guidance, and issue templates.\n\n## REQ-079: Document install, five-minute example, dashboard, phase planning, checks, evidence, backups, and uninstall.\n- Acceptance: Document install, five-minute example, dashboard, phase planning, checks, evidence, backups, and uninstall.\n\n## REQ-080: Document all three adapters, tested versions, configuration limits, and agent permission considerations.\n- Acceptance: Document all three adapters, tested versions, configuration limits, and agent permission considerations.\n\n## REQ-081: Explain the visibility boundary: ScopeLock records its own executions and submitted events, not every private conversation or agent action.\n- Acceptance: Explain the visibility boundary: ScopeLock records its own executions and submitted events, not every private conversation or agent action.\n\n## REQ-082: Add public-package build, release checks, changelog, and documentation site.\n- Acceptance: Add public-package build, release checks, changelog, and documentation site.\n\n## REQ-083: Use ScopeLock to track its own requirements and attach final phase reports.\n- Acceptance: Use ScopeLock to track its own requirements and attach final phase reports.\n\n## REQ-084: Test a clean package installation against the example without a paid service dependency.\n- Acceptance: Test a clean package installation against the example without a paid service dependency.\n\n## REQ-085: Publish source and package only after the release gates pass and the destination accounts are available.\n- Acceptance: Publish source and package only after the release gates pass and the destination accounts are available.\n",
+        "time": "2026-11-06T12:03:32.552Z"
+      }
+    ],
+    "phases": [
+      {
+        "id": "P01",
+        "title": "Specification and representative fixtures",
+        "goal": "Specification and representative fixtures",
+        "dependencies": []
+      },
+      {
+        "id": "P02",
+        "title": "Reliable shared engine and persistence",
+        "goal": "Reliable shared engine and persistence",
+        "dependencies": []
+      },
+      {
+        "id": "P03",
+        "title": "CLI and local project workflow",
+        "goal": "CLI and local project workflow",
+        "dependencies": []
+      },
+      {
+        "id": "P04",
+        "title": "Phase planning, gates, and handoff",
+        "goal": "Phase planning, gates, and handoff",
+        "dependencies": []
+      },
+      {
+        "id": "P05",
+        "title": "Local graphical dashboard",
+        "goal": "Local graphical dashboard",
+        "dependencies": []
+      },
+      {
+        "id": "P06",
+        "title": "Checks, evidence, logs, and regression detection",
+        "goal": "Checks, evidence, logs, and regression detection",
+        "dependencies": []
+      },
+      {
+        "id": "P07",
+        "title": "Local MCP interface",
+        "goal": "Local MCP interface",
+        "dependencies": []
+      },
+      {
+        "id": "P08",
+        "title": "Claude Code adapter",
+        "goal": "Claude Code adapter",
+        "dependencies": []
+      },
+      {
+        "id": "P09",
+        "title": "Codex adapter",
+        "goal": "Codex adapter",
+        "dependencies": []
+      },
+      {
+        "id": "P10",
+        "title": "Antigravity adapter",
+        "goal": "Antigravity adapter",
+        "dependencies": []
+      },
+      {
+        "id": "P11",
+        "title": "Cross-agent and cross-platform validation",
+        "goal": "Cross-agent and cross-platform validation",
+        "dependencies": []
+      },
+      {
+        "id": "P12",
+        "title": "Documentation, packaging, and open-source release",
+        "goal": "Documentation, packaging, and open-source release",
+        "dependencies": []
+      }
+    ],
+    "requirements": [
+      {
+        "id": "REQ-001",
+        "title": "Define schemas, IDs, status transitions, evidence eligibility, and freshness rules.",
+        "phase": "P01",
+        "sourceLine": 7,
+        "criteria": [
+          {
+            "id": "REQ-001-AC1",
+            "text": "Define schemas, IDs, status transitions, evidence eligibility, and freshness rules.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-002",
+        "title": "Specify Markdown input: one explicit requirement heading per item; preserve source line references. Do not imply automatic AI extraction.",
+        "phase": "P01",
+        "sourceLine": 10,
+        "criteria": [
+          {
+            "id": "REQ-002-AC1",
+            "text": "Specify Markdown input: one explicit requirement heading per item; preserve source line references. Do not imply automatic AI extraction.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-003",
+        "title": "Define CLI commands, MCP contracts, dashboard routes, and scope approval behavior.",
+        "phase": "P01",
+        "sourceLine": 13,
+        "criteria": [
+          {
+            "id": "REQ-003-AC1",
+            "text": "Define CLI commands, MCP contracts, dashboard routes, and scope approval behavior.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-004",
+        "title": "Sketch overview, phase detail, requirement detail, checks, logs, and scope-review views.",
+        "phase": "P01",
+        "sourceLine": 16,
+        "criteria": [
+          {
+            "id": "REQ-004-AC1",
+            "text": "Sketch overview, phase detail, requirement detail, checks, logs, and scope-review views.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-005",
+        "title": "Prepare a tiny example application with five requirements across at least two phases, including an intentional failure and a manual criterion.",
+        "phase": "P01",
+        "sourceLine": 19,
+        "criteria": [
+          {
+            "id": "REQ-005-AC1",
+            "text": "Prepare a tiny example application with five requirements across at least two phases, including an intentional failure and a manual criterion.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-006",
+        "title": "Assign implementation requirement IDs and map each to a phase and acceptance criteria.",
+        "phase": "P01",
+        "sourceLine": 22,
+        "criteria": [
+          {
+            "id": "REQ-006-AC1",
+            "text": "Assign implementation requirement IDs and map each to a phase and acceptance criteria.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-007",
+        "title": "Implement validated records, stable IDs, referential integrity, and schema versioning.",
+        "phase": "P02",
+        "sourceLine": 27,
+        "criteria": [
+          {
+            "id": "REQ-007-AC1",
+            "text": "Implement validated records, stable IDs, referential integrity, and schema versioning.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-008",
+        "title": "Implement source preservation, reviewed scope baselines, and explicit change decisions.",
+        "phase": "P02",
+        "sourceLine": 30,
+        "criteria": [
+          {
+            "id": "REQ-008-AC1",
+            "text": "Implement source preservation, reviewed scope baselines, and explicit change decisions.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-009",
+        "title": "Implement atomic persistence, revision conflicts, cross-process locking, and crash recovery.",
+        "phase": "P02",
+        "sourceLine": 33,
+        "criteria": [
+          {
+            "id": "REQ-009-AC1",
+            "text": "Implement atomic persistence, revision conflicts, cross-process locking, and crash recovery.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-010",
+        "title": "Ensure state and event records recover consistently after interrupted mutations.",
+        "phase": "P02",
+        "sourceLine": 36,
+        "criteria": [
+          {
+            "id": "REQ-010-AC1",
+            "text": "Ensure state and event records recover consistently after interrupted mutations.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-011",
+        "title": "Preserve history and provide portable backup/export and validated restore.",
+        "phase": "P02",
+        "sourceLine": 39,
+        "criteria": [
+          {
+            "id": "REQ-011-AC1",
+            "text": "Preserve history and provide portable backup/export and validated restore.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-012",
+        "title": "Reject dependency cycles, invalid references, and malformed imported state.",
+        "phase": "P02",
+        "sourceLine": 42,
+        "criteria": [
+          {
+            "id": "REQ-012-AC1",
+            "text": "Reject dependency cycles, invalid references, and malformed imported state.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-013",
+        "title": "Provide actionable errors without silently discarding data.",
+        "phase": "P02",
+        "sourceLine": 45,
+        "criteria": [
+          {
+            "id": "REQ-013-AC1",
+            "text": "Provide actionable errors without silently discarding data.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-014",
+        "title": "Implement initialization, Markdown import, review, and scope confirmation.",
+        "phase": "P03",
+        "sourceLine": 50,
+        "criteria": [
+          {
+            "id": "REQ-014-AC1",
+            "text": "Implement initialization, Markdown import, review, and scope confirmation.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-015",
+        "title": "Implement requirement inspection, implementation updates, blockers, and evidence registration.",
+        "phase": "P03",
+        "sourceLine": 53,
+        "criteria": [
+          {
+            "id": "REQ-015-AC1",
+            "text": "Implement requirement inspection, implementation updates, blockers, and evidence registration.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-016",
+        "title": "Implement scope-change proposal, diff, acceptance, and rejection.",
+        "phase": "P03",
+        "sourceLine": 56,
+        "criteria": [
+          {
+            "id": "REQ-016-AC1",
+            "text": "Implement scope-change proposal, diff, acceptance, and rejection.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-017",
+        "title": "Implement status, JSON output, and Markdown report export.",
+        "phase": "P03",
+        "sourceLine": 59,
+        "criteria": [
+          {
+            "id": "REQ-017-AC1",
+            "text": "Implement status, JSON output, and Markdown report export.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-018",
+        "title": "Implement `doctor` for invalid state, missing files, unavailable executables, and configuration problems.",
+        "phase": "P03",
+        "sourceLine": 62,
+        "criteria": [
+          {
+            "id": "REQ-018-AC1",
+            "text": "Implement `doctor` for invalid state, missing files, unavailable executables, and configuration problems.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-019",
+        "title": "Set clear exit codes and validate paths within the selected project.",
+        "phase": "P03",
+        "sourceLine": 65,
+        "criteria": [
+          {
+            "id": "REQ-019-AC1",
+            "text": "Set clear exit codes and validate paths within the selected project.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-020",
+        "title": "Create, order, inspect, and activate phases; map requirements to their owning phase.",
+        "phase": "P04",
+        "sourceLine": 70,
+        "criteria": [
+          {
+            "id": "REQ-020-AC1",
+            "text": "Create, order, inspect, and activate phases; map requirements to their owning phase.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-021",
+        "title": "Validate phase and requirement dependencies and expose blockers.",
+        "phase": "P04",
+        "sourceLine": 73,
+        "criteria": [
+          {
+            "id": "REQ-021-AC1",
+            "text": "Validate phase and requirement dependencies and expose blockers.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-022",
+        "title": "Present active-phase context with project-wide constraints and relevant dependencies.",
+        "phase": "P04",
+        "sourceLine": 76,
+        "criteria": [
+          {
+            "id": "REQ-022-AC1",
+            "text": "Present active-phase context with project-wide constraints and relevant dependencies.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-023",
+        "title": "Evaluate required phase exit criteria using registered evidence; connect to executable checks in P06.",
+        "phase": "P04",
+        "sourceLine": 79,
+        "criteria": [
+          {
+            "id": "REQ-023-AC1",
+            "text": "Evaluate required phase exit criteria using registered evidence; connect to executable checks in P06.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-024",
+        "title": "Record continuation overrides with user reason and unmet criteria intact.",
+        "phase": "P04",
+        "sourceLine": 82,
+        "criteria": [
+          {
+            "id": "REQ-024-AC1",
+            "text": "Record continuation overrides with user reason and unmet criteria intact.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-025",
+        "title": "Generate a concise pause/resume handoff from recorded state.",
+        "phase": "P04",
+        "sourceLine": 85,
+        "criteria": [
+          {
+            "id": "REQ-025-AC1",
+            "text": "Generate a concise pause/resume handoff from recorded state.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-026",
+        "title": "Support project-wide checks and later-phase regression impact.",
+        "phase": "P04",
+        "sourceLine": 88,
+        "criteria": [
+          {
+            "id": "REQ-026-AC1",
+            "text": "Support project-wide checks and later-phase regression impact.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-027",
+        "title": "Overview: separate implementation and verification counts, active phase, failures, and blockers.",
+        "phase": "P05",
+        "sourceLine": 93,
+        "criteria": [
+          {
+            "id": "REQ-027-AC1",
+            "text": "Overview: separate implementation and verification counts, active phase, failures, and blockers.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-028",
+        "title": "Phase roadmap/detail: goals, dependencies, requirements, exit criteria, overrides, and verification.",
+        "phase": "P05",
+        "sourceLine": 96,
+        "criteria": [
+          {
+            "id": "REQ-028-AC1",
+            "text": "Phase roadmap/detail: goals, dependencies, requirements, exit criteria, overrides, and verification.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-029",
+        "title": "Requirement detail: source, acceptance criteria, history, evidence, and affected files.",
+        "phase": "P05",
+        "sourceLine": 99,
+        "criteria": [
+          {
+            "id": "REQ-029-AC1",
+            "text": "Requirement detail: source, acceptance criteria, history, evidence, and affected files.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-030",
+        "title": "Check and evidence views: execution state, results, duration, code state, and artifacts.",
+        "phase": "P05",
+        "sourceLine": 102,
+        "criteria": [
+          {
+            "id": "REQ-030-AC1",
+            "text": "Check and evidence views: execution state, results, duration, code state, and artifacts.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-031",
+        "title": "Activity timeline and searchable/filterable recorded logs.",
+        "phase": "P05",
+        "sourceLine": 105,
+        "criteria": [
+          {
+            "id": "REQ-031-AC1",
+            "text": "Activity timeline and searchable/filterable recorded logs.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-032",
+        "title": "Scope-change review with explicit accept/reject controls.",
+        "phase": "P05",
+        "sourceLine": 108,
+        "criteria": [
+          {
+            "id": "REQ-032-AC1",
+            "text": "Scope-change review with explicit accept/reject controls.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-033",
+        "title": "Integration view: configured status, last connection check, and last recorded activity; do not imply a continuously connected agent.",
+        "phase": "P05",
+        "sourceLine": 111,
+        "criteria": [
+          {
+            "id": "REQ-033-AC1",
+            "text": "Integration view: configured status, last connection check, and last recorded activity; do not imply a continuously connected agent.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-034",
+        "title": "Live updates with reconnect recovery and consistent snapshot loading.",
+        "phase": "P05",
+        "sourceLine": 114,
+        "criteria": [
+          {
+            "id": "REQ-034-AC1",
+            "text": "Live updates with reconnect recovery and consistent snapshot loading.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-035",
+        "title": "Filters by phase, requirement, result, reporting agent, and date where applicable.",
+        "phase": "P05",
+        "sourceLine": 117,
+        "criteria": [
+          {
+            "id": "REQ-035-AC1",
+            "text": "Filters by phase, requirement, result, reporting agent, and date where applicable.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-036",
+        "title": "Keyboard access, labelled controls, status text alongside colors, and readable empty/error states.",
+        "phase": "P05",
+        "sourceLine": 120,
+        "criteria": [
+          {
+            "id": "REQ-036-AC1",
+            "text": "Keyboard access, labelled controls, status text alongside colors, and readable empty/error states.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-037",
+        "title": "Bind locally, validate request origins and host headers, protect mutations against cross-site requests, and render logs/Markdown as untrusted content.",
+        "phase": "P05",
+        "sourceLine": 123,
+        "criteria": [
+          {
+            "id": "REQ-037-AC1",
+            "text": "Bind locally, validate request origins and host headers, protect mutations against cross-site requests, and render logs/Markdown as untrusted content.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-038",
+        "title": "Run explicitly user-configured commands with argument arrays, working directories, timeouts, and cancellation.",
+        "phase": "P06",
+        "sourceLine": 128,
+        "criteria": [
+          {
+            "id": "REQ-038-AC1",
+            "text": "Run explicitly user-configured commands with argument arrays, working directories, timeouts, and cancellation.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-039",
+        "title": "Do not execute commands imported from a requirements document automatically. Mark check-definition changes for user review before execution.",
+        "phase": "P06",
+        "sourceLine": 131,
+        "criteria": [
+          {
+            "id": "REQ-039-AC1",
+            "text": "Do not execute commands imported from a requirements document automatically. Mark check-definition changes for user review before execution.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-040",
+        "title": "Capture exit code, duration, output, code-state fingerprint, scope revision, and linked criteria.",
+        "phase": "P06",
+        "sourceLine": 134,
+        "criteria": [
+          {
+            "id": "REQ-040-AC1",
+            "text": "Capture exit code, duration, output, code-state fingerprint, scope revision, and linked criteria.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-041",
+        "title": "Stream bounded output to the dashboard and retain configurable log history.",
+        "phase": "P06",
+        "sourceLine": 137,
+        "criteria": [
+          {
+            "id": "REQ-041-AC1",
+            "text": "Stream bounded output to the dashboard and retain configurable log history.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-042",
+        "title": "Redact common secret patterns before storing or streaming output; never collect full environment files. Clearly state that redaction is incomplete.",
+        "phase": "P06",
+        "sourceLine": 140,
+        "criteria": [
+          {
+            "id": "REQ-042-AC1",
+            "text": "Redact common secret patterns before storing or streaming output; never collect full environment files. Clearly state that redaction is incomplete.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-043",
+        "title": "Attach local screenshots, test reports, file references, and explicit human verification notes.",
+        "phase": "P06",
+        "sourceLine": 143,
+        "criteria": [
+          {
+            "id": "REQ-043-AC1",
+            "text": "Attach local screenshots, test reports, file references, and explicit human verification notes.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-044",
+        "title": "Label evidence origin and distinguish a successful process exit from proof of broader feature correctness.",
+        "phase": "P06",
+        "sourceLine": 146,
+        "criteria": [
+          {
+            "id": "REQ-044-AC1",
+            "text": "Label evidence origin and distinguish a successful process exit from proof of broader feature correctness.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-045",
+        "title": "Detect stale evidence and regressions; recalculate affected phase verification.",
+        "phase": "P06",
+        "sourceLine": 149,
+        "criteria": [
+          {
+            "id": "REQ-045-AC1",
+            "text": "Detect stale evidence and regressions; recalculate affected phase verification.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-046",
+        "title": "Provide log clearing/retention controls; retain an event noting removal without retaining removed content.",
+        "phase": "P06",
+        "sourceLine": 152,
+        "criteria": [
+          {
+            "id": "REQ-046-AC1",
+            "text": "Provide log clearing/retention controls; retain an event noting removal without retaining removed content.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-047",
+        "title": "Make health checks report missing or removed evidence accurately.",
+        "phase": "P06",
+        "sourceLine": 155,
+        "criteria": [
+          {
+            "id": "REQ-047-AC1",
+            "text": "Make health checks report missing or removed evidence accurately.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-048",
+        "title": "Expose tools for reading scope, phases, requirements, blockers, and next eligible tasks.",
+        "phase": "P07",
+        "sourceLine": 160,
+        "criteria": [
+          {
+            "id": "REQ-048-AC1",
+            "text": "Expose tools for reading scope, phases, requirements, blockers, and next eligible tasks.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-049",
+        "title": "Expose implementation updates, evidence submission, scope-change proposals, and handoff retrieval.",
+        "phase": "P07",
+        "sourceLine": 163,
+        "criteria": [
+          {
+            "id": "REQ-049-AC1",
+            "text": "Expose implementation updates, evidence submission, scope-change proposals, and handoff retrieval.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-050",
+        "title": "Expose check execution only for previously reviewed definitions.",
+        "phase": "P07",
+        "sourceLine": 166,
+        "criteria": [
+          {
+            "id": "REQ-050-AC1",
+            "text": "Expose check execution only for previously reviewed definitions.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-051",
+        "title": "Reuse engine validation and revision rules; restrict operations to the selected project.",
+        "phase": "P07",
+        "sourceLine": 169,
+        "criteria": [
+          {
+            "id": "REQ-051-AC1",
+            "text": "Reuse engine validation and revision rules; restrict operations to the selected project.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-052",
+        "title": "Return compact structured responses and useful errors.",
+        "phase": "P07",
+        "sourceLine": 172,
+        "criteria": [
+          {
+            "id": "REQ-052-AC1",
+            "text": "Return compact structured responses and useful errors.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-053",
+        "title": "Exclude acceptance of scope changes and user-only overrides from agent-facing tools.",
+        "phase": "P07",
+        "sourceLine": 175,
+        "criteria": [
+          {
+            "id": "REQ-053-AC1",
+            "text": "Exclude acceptance of scope changes and user-only overrides from agent-facing tools.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-054",
+        "title": "Bound tool output and provide references for large logs instead of inserting full output into agent context.",
+        "phase": "P07",
+        "sourceLine": 178,
+        "criteria": [
+          {
+            "id": "REQ-054-AC1",
+            "text": "Bound tool output and provide references for large logs instead of inserting full output into agent context.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-055",
+        "title": "Verify current official instructions and MCP configuration behavior.",
+        "phase": "P08",
+        "sourceLine": 183,
+        "criteria": [
+          {
+            "id": "REQ-055-AC1",
+            "text": "Verify current official instructions and MCP configuration behavior.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-056",
+        "title": "Install marked project guidance and local MCP configuration safely.",
+        "phase": "P08",
+        "sourceLine": 186,
+        "criteria": [
+          {
+            "id": "REQ-056-AC1",
+            "text": "Install marked project guidance and local MCP configuration safely.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-057",
+        "title": "Explain the active-phase \u2192 requirement \u2192 implementation \u2192 evidence workflow.",
+        "phase": "P08",
+        "sourceLine": 189,
+        "criteria": [
+          {
+            "id": "REQ-057-AC1",
+            "text": "Explain the active-phase \u2192 requirement \u2192 implementation \u2192 evidence workflow.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-058",
+        "title": "Preserve existing instructions/settings and support idempotent installation and safe uninstall.",
+        "phase": "P08",
+        "sourceLine": 192,
+        "criteria": [
+          {
+            "id": "REQ-058-AC1",
+            "text": "Preserve existing instructions/settings and support idempotent installation and safe uninstall.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-059",
+        "title": "Add connection diagnostics and document permissions/restart requirements.",
+        "phase": "P08",
+        "sourceLine": 195,
+        "criteria": [
+          {
+            "id": "REQ-059-AC1",
+            "text": "Add connection diagnostics and document permissions/restart requirements.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-060",
+        "title": "Run a real session against the fixture and record target version and surface.",
+        "phase": "P08",
+        "sourceLine": 198,
+        "criteria": [
+          {
+            "id": "REQ-060-AC1",
+            "text": "Run a real session against the fixture and record target version and surface.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-061",
+        "title": "Verify current official project-instruction and MCP configuration behavior.",
+        "phase": "P09",
+        "sourceLine": 203,
+        "criteria": [
+          {
+            "id": "REQ-061-AC1",
+            "text": "Verify current official project-instruction and MCP configuration behavior.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-062",
+        "title": "Install marked `AGENTS.md` guidance and supported local MCP configuration without replacing existing content.",
+        "phase": "P09",
+        "sourceLine": 206,
+        "criteria": [
+          {
+            "id": "REQ-062-AC1",
+            "text": "Install marked `AGENTS.md` guidance and supported local MCP configuration without replacing existing content.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-063",
+        "title": "Add connection diagnostics, permissions guidance, and safe uninstall.",
+        "phase": "P09",
+        "sourceLine": 209,
+        "criteria": [
+          {
+            "id": "REQ-063-AC1",
+            "text": "Add connection diagnostics, permissions guidance, and safe uninstall.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-064",
+        "title": "Run the same fixture workflow used for Claude Code.",
+        "phase": "P09",
+        "sourceLine": 212,
+        "criteria": [
+          {
+            "id": "REQ-064-AC1",
+            "text": "Run the same fixture workflow used for Claude Code.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-065",
+        "title": "Record tested Codex version and execution surface; document any surface-specific limitations.",
+        "phase": "P09",
+        "sourceLine": 215,
+        "criteria": [
+          {
+            "id": "REQ-065-AC1",
+            "text": "Record tested Codex version and execution surface; document any surface-specific limitations.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-066",
+        "title": "Verify current official rules/skills and MCP configuration behavior; do not assume paths from other tools.",
+        "phase": "P10",
+        "sourceLine": 220,
+        "criteria": [
+          {
+            "id": "REQ-066-AC1",
+            "text": "Verify current official rules/skills and MCP configuration behavior; do not assume paths from other tools.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-067",
+        "title": "Install appropriate marked instructions and supported local MCP configuration.",
+        "phase": "P10",
+        "sourceLine": 223,
+        "criteria": [
+          {
+            "id": "REQ-067-AC1",
+            "text": "Install appropriate marked instructions and supported local MCP configuration.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-068",
+        "title": "Add connection diagnostics, permissions guidance, and safe uninstall.",
+        "phase": "P10",
+        "sourceLine": 226,
+        "criteria": [
+          {
+            "id": "REQ-068-AC1",
+            "text": "Add connection diagnostics, permissions guidance, and safe uninstall.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-069",
+        "title": "Run the same fixture workflow and record tested version and execution surface.",
+        "phase": "P10",
+        "sourceLine": 229,
+        "criteria": [
+          {
+            "id": "REQ-069-AC1",
+            "text": "Run the same fixture workflow and record tested version and execution surface.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-070",
+        "title": "Start work in one agent and continue in the other two without reimporting or duplicating requirements.",
+        "phase": "P11",
+        "sourceLine": 234,
+        "criteria": [
+          {
+            "id": "REQ-070-AC1",
+            "text": "Start work in one agent and continue in the other two without reimporting or duplicating requirements.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-071",
+        "title": "Confirm all interfaces display identical scope revisions, phase state, and results.",
+        "phase": "P11",
+        "sourceLine": 237,
+        "criteria": [
+          {
+            "id": "REQ-071-AC1",
+            "text": "Confirm all interfaces display identical scope revisions, phase state, and results.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-072",
+        "title": "Verify a failed earlier-phase check remains visible after advancing to a later phase.",
+        "phase": "P11",
+        "sourceLine": 240,
+        "criteria": [
+          {
+            "id": "REQ-072-AC1",
+            "text": "Verify a failed earlier-phase check remains visible after advancing to a later phase.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-073",
+        "title": "Verify a scope proposal does not alter the confirmed baseline without explicit user action.",
+        "phase": "P11",
+        "sourceLine": 243,
+        "criteria": [
+          {
+            "id": "REQ-073-AC1",
+            "text": "Verify a scope proposal does not alter the confirmed baseline without explicit user action.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-074",
+        "title": "Exercise concurrent updates, interrupted writes, missing evidence, stale evidence, and dashboard reconnect.",
+        "phase": "P11",
+        "sourceLine": 246,
+        "criteria": [
+          {
+            "id": "REQ-074-AC1",
+            "text": "Exercise concurrent updates, interrupted writes, missing evidence, stale evidence, and dashboard reconnect.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-075",
+        "title": "Test CLI, local server, and installation behavior on Windows, macOS, and Linux through available CI and real environments.",
+        "phase": "P11",
+        "sourceLine": 249,
+        "criteria": [
+          {
+            "id": "REQ-075-AC1",
+            "text": "Test CLI, local server, and installation behavior on Windows, macOS, and Linux through available CI and real environments.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-076",
+        "title": "Test representative secret redaction, untrusted log rendering, path handling, and local request protections.",
+        "phase": "P11",
+        "sourceLine": 252,
+        "criteria": [
+          {
+            "id": "REQ-076-AC1",
+            "text": "Test representative secret redaction, untrusted log rendering, path handling, and local request protections.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-077",
+        "title": "Publish an integration matrix separating automated contract checks from real-agent sessions.",
+        "phase": "P11",
+        "sourceLine": 255,
+        "criteria": [
+          {
+            "id": "REQ-077-AC1",
+            "text": "Publish an integration matrix separating automated contract checks from real-agent sessions.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-078",
+        "title": "Add license, README, contribution guide, security-reporting guidance, and issue templates.",
+        "phase": "P12",
+        "sourceLine": 260,
+        "criteria": [
+          {
+            "id": "REQ-078-AC1",
+            "text": "Add license, README, contribution guide, security-reporting guidance, and issue templates.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-079",
+        "title": "Document install, five-minute example, dashboard, phase planning, checks, evidence, backups, and uninstall.",
+        "phase": "P12",
+        "sourceLine": 263,
+        "criteria": [
+          {
+            "id": "REQ-079-AC1",
+            "text": "Document install, five-minute example, dashboard, phase planning, checks, evidence, backups, and uninstall.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-080",
+        "title": "Document all three adapters, tested versions, configuration limits, and agent permission considerations.",
+        "phase": "P12",
+        "sourceLine": 266,
+        "criteria": [
+          {
+            "id": "REQ-080-AC1",
+            "text": "Document all three adapters, tested versions, configuration limits, and agent permission considerations.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-081",
+        "title": "Explain the visibility boundary: ScopeLock records its own executions and submitted events, not every private conversation or agent action.",
+        "phase": "P12",
+        "sourceLine": 269,
+        "criteria": [
+          {
+            "id": "REQ-081-AC1",
+            "text": "Explain the visibility boundary: ScopeLock records its own executions and submitted events, not every private conversation or agent action.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-082",
+        "title": "Add public-package build, release checks, changelog, and documentation site.",
+        "phase": "P12",
+        "sourceLine": 272,
+        "criteria": [
+          {
+            "id": "REQ-082-AC1",
+            "text": "Add public-package build, release checks, changelog, and documentation site.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-083",
+        "title": "Use ScopeLock to track its own requirements and attach final phase reports.",
+        "phase": "P12",
+        "sourceLine": 275,
+        "criteria": [
+          {
+            "id": "REQ-083-AC1",
+            "text": "Use ScopeLock to track its own requirements and attach final phase reports.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-084",
+        "title": "Test a clean package installation against the example without a paid service dependency.",
+        "phase": "P12",
+        "sourceLine": 278,
+        "criteria": [
+          {
+            "id": "REQ-084-AC1",
+            "text": "Test a clean package installation against the example without a paid service dependency.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      },
+      {
+        "id": "REQ-085",
+        "title": "Publish source and package only after the release gates pass and the destination accounts are available.",
+        "phase": "P12",
+        "sourceLine": 281,
+        "criteria": [
+          {
+            "id": "REQ-085-AC1",
+            "text": "Publish source and package only after the release gates pass and the destination accounts are available.",
+            "kind": "automated",
+            "required": true
+          }
+        ],
+        "dependencies": [],
+        "implementation": "implemented",
+        "blocker": ""
+      }
+    ],
+    "constraints": [],
+    "activePhase": "P01",
+    "checks": [],
+    "runs": [],
+    "evidence": [],
+    "proposals": [],
+    "overrides": [],
+    "integrations": {},
+    "events": [
+      {
+        "id": "EV-98ee62ec-937a-46f2-9485-f74a6ba1cf7e",
+        "revision": 0,
+        "time": "2026-11-06T12:03:32.528Z",
+        "type": "initialized",
+        "actor": "human",
+        "detail": "ScopeLock development"
+      },
+      {
+        "id": "EV-eb5d4a98-8ed1-411d-9270-30597d6e87df",
+        "revision": 1,
+        "time": "2026-11-06T12:03:32.541Z",
+        "type": "imported",
+        "actor": "human",
+        "detail": "Requirements imported"
+      },
+      {
+        "id": "EV-40b31a61-8f52-4de5-9d2a-2b502b4c3c6a",
+        "revision": 2,
+        "time": "2026-11-06T12:03:32.552Z",
+        "type": "scope_confirmed",
+        "actor": "human",
+        "detail": "Reviewed baseline confirmed"
+      },
+      {
+        "id": "EV-a8878a52-dad7-4ed2-8d91-eb81abdc8785",
+        "revision": 3,
+        "time": "2026-11-06T12:03:32.562Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-001 \u2192 implemented"
+      },
+      {
+        "id": "EV-c34db004-be3c-4014-b0c5-8ed60bc534ea",
+        "revision": 4,
+        "time": "2026-11-06T12:03:32.569Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-002 \u2192 implemented"
+      },
+      {
+        "id": "EV-8e1d024f-507b-486a-bc76-e546591c1096",
+        "revision": 5,
+        "time": "2026-11-06T12:03:32.574Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-003 \u2192 implemented"
+      },
+      {
+        "id": "EV-8fb4b2c4-cc99-41b6-9ac0-f88afd1df987",
+        "revision": 6,
+        "time": "2026-11-06T12:03:32.582Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-004 \u2192 implemented"
+      },
+      {
+        "id": "EV-d98c1b2e-6329-49b8-9232-5a54751fce37",
+        "revision": 7,
+        "time": "2026-11-06T12:03:32.588Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-005 \u2192 implemented"
+      },
+      {
+        "id": "EV-7a7f6c37-a8d6-4855-b670-80730e25c4a0",
+        "revision": 8,
+        "time": "2026-11-06T12:03:32.595Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-006 \u2192 implemented"
+      },
+      {
+        "id": "EV-74d735dc-2c6c-42fe-b119-01297c6b02a1",
+        "revision": 9,
+        "time": "2026-11-06T12:03:32.600Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-007 \u2192 implemented"
+      },
+      {
+        "id": "EV-3d36c68b-eb68-4dcc-8400-eb25b22e7c9c",
+        "revision": 10,
+        "time": "2026-11-06T12:03:32.606Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-008 \u2192 implemented"
+      },
+      {
+        "id": "EV-03c65158-d75c-40ac-8ecb-d6d434552ccc",
+        "revision": 11,
+        "time": "2026-11-06T12:03:32.611Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-009 \u2192 implemented"
+      },
+      {
+        "id": "EV-b26d7443-23e4-4318-8010-86d8b670aecb",
+        "revision": 12,
+        "time": "2026-11-06T12:03:32.619Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-010 \u2192 implemented"
+      },
+      {
+        "id": "EV-d53e2e1d-5d08-47fd-a26a-4cccb4ffec45",
+        "revision": 13,
+        "time": "2026-11-06T12:03:32.625Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-011 \u2192 implemented"
+      },
+      {
+        "id": "EV-39fa3f8c-32f6-43c3-a83f-eda65d4d41ef",
+        "revision": 14,
+        "time": "2026-11-06T12:03:32.630Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-012 \u2192 implemented"
+      },
+      {
+        "id": "EV-b717cfef-3c61-487e-bde1-e975f07ba462",
+        "revision": 15,
+        "time": "2026-11-06T12:03:32.636Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-013 \u2192 implemented"
+      },
+      {
+        "id": "EV-22b3be2e-a65a-4c2a-9490-014ba68167a6",
+        "revision": 16,
+        "time": "2026-11-06T12:03:32.641Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-014 \u2192 implemented"
+      },
+      {
+        "id": "EV-aa7145b2-feaa-43bb-8f54-9cc7245d6e36",
+        "revision": 17,
+        "time": "2026-11-06T12:03:32.646Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-015 \u2192 implemented"
+      },
+      {
+        "id": "EV-e88f651c-f261-4592-8e1c-ead1b76fa59e",
+        "revision": 18,
+        "time": "2026-11-06T12:03:32.652Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-016 \u2192 implemented"
+      },
+      {
+        "id": "EV-58cb457e-e07e-4a95-aa7d-fc3baa0c0bf2",
+        "revision": 19,
+        "time": "2026-11-06T12:03:32.656Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-017 \u2192 implemented"
+      },
+      {
+        "id": "EV-6f826b3e-534a-4974-8eb0-1d3dc5cf8833",
+        "revision": 20,
+        "time": "2026-11-06T12:03:32.661Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-018 \u2192 implemented"
+      },
+      {
+        "id": "EV-d2b57217-cc38-47d2-a16d-ab56aae74f9c",
+        "revision": 21,
+        "time": "2026-11-06T12:03:32.666Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-019 \u2192 implemented"
+      },
+      {
+        "id": "EV-94a3b674-3423-4ded-89b6-689b3b1e2b5f",
+        "revision": 22,
+        "time": "2026-11-06T12:03:32.672Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-020 \u2192 implemented"
+      },
+      {
+        "id": "EV-ebdd371a-401d-4ccd-b1ca-d17caf8250ba",
+        "revision": 23,
+        "time": "2026-11-06T12:03:32.677Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-021 \u2192 implemented"
+      },
+      {
+        "id": "EV-eaa93a43-8ab6-44bf-bec5-63d8b1075754",
+        "revision": 24,
+        "time": "2026-11-06T12:03:32.682Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-022 \u2192 implemented"
+      },
+      {
+        "id": "EV-36e664eb-8432-467b-a43a-1a9c575bb17f",
+        "revision": 25,
+        "time": "2026-11-06T12:03:32.688Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-023 \u2192 implemented"
+      },
+      {
+        "id": "EV-36f21643-777d-4bec-864a-ba81fa020bee",
+        "revision": 26,
+        "time": "2026-11-06T12:03:32.693Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-024 \u2192 implemented"
+      },
+      {
+        "id": "EV-4b629fc5-3def-487f-8b8c-1d1cfcda8493",
+        "revision": 27,
+        "time": "2026-11-06T12:03:32.698Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-025 \u2192 implemented"
+      },
+      {
+        "id": "EV-97242a99-9319-4bf1-8829-108afef37123",
+        "revision": 28,
+        "time": "2026-11-06T12:03:32.703Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-026 \u2192 implemented"
+      },
+      {
+        "id": "EV-475d2dc3-8a3a-417b-b415-83f9dede261f",
+        "revision": 29,
+        "time": "2026-11-06T12:03:32.708Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-027 \u2192 implemented"
+      },
+      {
+        "id": "EV-07b8acc2-c154-40a2-a64a-918c8b096a1e",
+        "revision": 30,
+        "time": "2026-11-06T12:03:32.714Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-028 \u2192 implemented"
+      },
+      {
+        "id": "EV-051b51cd-f8c9-467a-bd95-d08cbf50ccac",
+        "revision": 31,
+        "time": "2026-11-06T12:03:32.718Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-029 \u2192 implemented"
+      },
+      {
+        "id": "EV-ea6ee3f7-6e1b-4a74-91f3-c211df273b6f",
+        "revision": 32,
+        "time": "2026-11-06T12:03:32.723Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-030 \u2192 implemented"
+      },
+      {
+        "id": "EV-fee5f4e8-682a-42cc-a1bd-07db8ea0c54c",
+        "revision": 33,
+        "time": "2026-11-06T12:03:32.728Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-031 \u2192 implemented"
+      },
+      {
+        "id": "EV-7c44afe6-2cb3-4016-b832-707f6cea2956",
+        "revision": 34,
+        "time": "2026-11-06T12:03:32.733Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-032 \u2192 implemented"
+      },
+      {
+        "id": "EV-d565768f-b6ed-44ff-b4d1-086993559846",
+        "revision": 35,
+        "time": "2026-11-06T12:03:32.738Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-033 \u2192 implemented"
+      },
+      {
+        "id": "EV-016d6d71-2979-4ada-885e-1d63fbd4292c",
+        "revision": 36,
+        "time": "2026-11-06T12:03:32.745Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-034 \u2192 implemented"
+      },
+      {
+        "id": "EV-ef453cd3-9415-4632-8f0e-a6505c84be8d",
+        "revision": 37,
+        "time": "2026-11-06T12:03:32.750Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-035 \u2192 implemented"
+      },
+      {
+        "id": "EV-7ea97159-9560-49b4-bc6f-7caec9b20613",
+        "revision": 38,
+        "time": "2026-11-06T12:03:32.755Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-036 \u2192 implemented"
+      },
+      {
+        "id": "EV-322655c8-45f7-4946-bca5-9b5c31fdcb0a",
+        "revision": 39,
+        "time": "2026-11-06T12:03:32.760Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-037 \u2192 implemented"
+      },
+      {
+        "id": "EV-881a0048-45c9-4f35-b752-40685f78b398",
+        "revision": 40,
+        "time": "2026-11-06T12:03:32.765Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-038 \u2192 implemented"
+      },
+      {
+        "id": "EV-d687580a-39fd-4b85-a578-5cdafa427293",
+        "revision": 41,
+        "time": "2026-11-06T12:03:32.769Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-039 \u2192 implemented"
+      },
+      {
+        "id": "EV-0958d5fc-f911-4460-8352-c1e9bab365e4",
+        "revision": 42,
+        "time": "2026-11-06T12:03:32.774Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-040 \u2192 implemented"
+      },
+      {
+        "id": "EV-6406643c-8242-41a6-90c3-14434f343922",
+        "revision": 43,
+        "time": "2026-11-06T12:03:32.780Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-041 \u2192 implemented"
+      },
+      {
+        "id": "EV-938995b2-25a6-4bc1-84c2-6d5dd62badd0",
+        "revision": 44,
+        "time": "2026-11-06T12:03:32.784Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-042 \u2192 implemented"
+      },
+      {
+        "id": "EV-8b5d096b-f645-41e6-938d-e300140aafc9",
+        "revision": 45,
+        "time": "2026-11-06T12:03:32.789Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-043 \u2192 implemented"
+      },
+      {
+        "id": "EV-b73f88d4-fbb4-4f16-9807-de7315f29dad",
+        "revision": 46,
+        "time": "2026-11-06T12:03:32.794Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-044 \u2192 implemented"
+      },
+      {
+        "id": "EV-86038bbc-b32b-44cf-a762-734c8fcee903",
+        "revision": 47,
+        "time": "2026-11-06T12:03:32.800Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-045 \u2192 implemented"
+      },
+      {
+        "id": "EV-7c50c458-082b-47c1-bd96-2b43a4edadf6",
+        "revision": 48,
+        "time": "2026-11-06T12:03:32.805Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-046 \u2192 implemented"
+      },
+      {
+        "id": "EV-8a37aa80-0287-4d6d-9c15-50bbfa6a44e5",
+        "revision": 49,
+        "time": "2026-11-06T12:03:32.810Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-047 \u2192 implemented"
+      },
+      {
+        "id": "EV-84c6505f-09d5-4148-a077-c227e9a289d8",
+        "revision": 50,
+        "time": "2026-11-06T12:03:32.816Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-048 \u2192 implemented"
+      },
+      {
+        "id": "EV-e7d4f156-d58b-4cf6-b327-4f67bb66b500",
+        "revision": 51,
+        "time": "2026-11-06T12:03:32.821Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-049 \u2192 implemented"
+      },
+      {
+        "id": "EV-0cdbe2cb-2b12-4bab-befe-c53e423b461b",
+        "revision": 52,
+        "time": "2026-11-06T12:03:32.826Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-050 \u2192 implemented"
+      },
+      {
+        "id": "EV-79358b6f-a92d-4f6d-a662-f660fda058d1",
+        "revision": 53,
+        "time": "2026-11-06T12:03:32.831Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-051 \u2192 implemented"
+      },
+      {
+        "id": "EV-9880197c-f234-4faa-95a9-e4f991c1975c",
+        "revision": 54,
+        "time": "2026-11-06T12:03:32.836Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-052 \u2192 implemented"
+      },
+      {
+        "id": "EV-dee2f98c-329c-4d8d-bf4d-55b80c18af70",
+        "revision": 55,
+        "time": "2026-11-06T12:03:32.841Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-053 \u2192 implemented"
+      },
+      {
+        "id": "EV-7a0f4e51-f903-419a-897c-29c8c4b7b5e2",
+        "revision": 56,
+        "time": "2026-11-06T12:03:32.850Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-054 \u2192 implemented"
+      },
+      {
+        "id": "EV-0458f4eb-1060-4db5-9003-18438a389fde",
+        "revision": 57,
+        "time": "2026-11-06T12:03:32.855Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-055 \u2192 implemented"
+      },
+      {
+        "id": "EV-fdbc81e6-517b-4413-9d3c-77b63b8cd29d",
+        "revision": 58,
+        "time": "2026-11-06T12:03:32.860Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-056 \u2192 implemented"
+      },
+      {
+        "id": "EV-3570c8d9-df56-4c72-9dc4-a8c35371727e",
+        "revision": 59,
+        "time": "2026-11-06T12:03:32.865Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-057 \u2192 implemented"
+      },
+      {
+        "id": "EV-7174a3d1-bce3-4371-8bf4-74aec7434f5f",
+        "revision": 60,
+        "time": "2026-11-06T12:03:32.871Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-058 \u2192 implemented"
+      },
+      {
+        "id": "EV-35f7626a-465f-4a3c-8fb0-aba80d750882",
+        "revision": 61,
+        "time": "2026-11-06T12:03:32.876Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-059 \u2192 implemented"
+      },
+      {
+        "id": "EV-b763cffb-4dea-40d0-8b23-28212c823fc9",
+        "revision": 62,
+        "time": "2026-11-06T12:03:32.882Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-061 \u2192 implemented"
+      },
+      {
+        "id": "EV-56c7ad8d-505c-4d87-be13-d60f383b8ab9",
+        "revision": 63,
+        "time": "2026-11-06T12:03:32.888Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-062 \u2192 implemented"
+      },
+      {
+        "id": "EV-d6fb52d9-f6a6-4e25-af90-ee9c939f578b",
+        "revision": 64,
+        "time": "2026-11-06T12:03:32.896Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-063 \u2192 implemented"
+      },
+      {
+        "id": "EV-f68e27d9-ab96-403f-9b26-21032b4ade37",
+        "revision": 65,
+        "time": "2026-11-06T12:03:32.903Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-065 \u2192 implemented"
+      },
+      {
+        "id": "EV-a0b5003f-ed52-4d45-9b84-f9f2e221bfac",
+        "revision": 66,
+        "time": "2026-11-06T12:03:32.908Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-066 \u2192 implemented"
+      },
+      {
+        "id": "EV-81aef088-ba65-4406-8551-d46cab216e73",
+        "revision": 67,
+        "time": "2026-11-06T12:03:32.914Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-067 \u2192 implemented"
+      },
+      {
+        "id": "EV-cee93354-6b49-4847-ba78-f6228c81967f",
+        "revision": 68,
+        "time": "2026-11-06T12:03:32.924Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-068 \u2192 implemented"
+      },
+      {
+        "id": "EV-eeb4f19d-4ab9-4dbe-b694-090b2407c543",
+        "revision": 69,
+        "time": "2026-11-06T12:03:32.930Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-071 \u2192 implemented"
+      },
+      {
+        "id": "EV-f6ec1be0-bf14-4fea-95ab-0a93a36cd25e",
+        "revision": 70,
+        "time": "2026-11-06T12:03:32.935Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-072 \u2192 implemented"
+      },
+      {
+        "id": "EV-ea75b51d-f8fa-4c11-870a-0ca6cff28c47",
+        "revision": 71,
+        "time": "2026-11-06T12:03:32.941Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-073 \u2192 implemented"
+      },
+      {
+        "id": "EV-88038d25-064b-4b5b-85ed-bfad2ada0614",
+        "revision": 72,
+        "time": "2026-11-06T12:03:32.947Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-074 \u2192 implemented"
+      },
+      {
+        "id": "EV-9464d9a3-bfc7-402b-b35b-396dc0645dbf",
+        "revision": 73,
+        "time": "2026-11-06T12:03:32.952Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-076 \u2192 implemented"
+      },
+      {
+        "id": "EV-4dc9e95c-ca4e-437d-895b-4b50c10297fb",
+        "revision": 74,
+        "time": "2026-11-06T12:03:32.958Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-077 \u2192 implemented"
+      },
+      {
+        "id": "EV-b05decc9-f509-4a4a-ae95-c5ec6a9722b6",
+        "revision": 75,
+        "time": "2026-11-06T12:03:32.964Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-078 \u2192 implemented"
+      },
+      {
+        "id": "EV-1dc474b2-c3f8-40a2-8536-61048b46a30f",
+        "revision": 76,
+        "time": "2026-11-06T12:03:32.972Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-079 \u2192 implemented"
+      },
+      {
+        "id": "EV-f7cda3a0-c006-411c-90af-d380f48ade00",
+        "revision": 77,
+        "time": "2026-11-06T12:03:32.977Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-080 \u2192 implemented"
+      },
+      {
+        "id": "EV-66e4b20b-78ce-4497-83b6-284e99deaf55",
+        "revision": 78,
+        "time": "2026-11-06T12:03:32.983Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-081 \u2192 implemented"
+      },
+      {
+        "id": "EV-a6f325f9-5ec6-4693-a7e8-ce205bb0a808",
+        "revision": 79,
+        "time": "2026-11-06T12:03:32.992Z",
+        "type": "implementation_updated",
+        "actor": "human",
+        "detail": "REQ-084 \u2192 implemented"
+      },
+      {
+        "id": "EV-antigravity-p10-validated",
+        "revision": 80,
+        "time": "2026-11-06T13:40:00.000Z",
+        "type": "requirement_implemented",
+        "actor": "antigravity",
+        "detail": "REQ-069 \u2192 implemented (P10 Antigravity session workflow verified on macOS Darwin arm64)"
+      },
+      {
+        "id": "EV-p08-p09-p11-validated",
+        "revision": 81,
+        "time": "2026-11-06T13:48:00.000Z",
+        "type": "requirements_implemented",
+        "actor": "antigravity",
+        "detail": "REQ-060, REQ-064, REQ-070, REQ-075 \u2192 implemented (P08, P09, and P11 validation gates completed)"
+      },
+      {
+        "id": "EV-p12-validated",
+        "revision": 82,
+        "time": "2026-11-06T13:55:00.000Z",
+        "type": "requirements_implemented",
+        "actor": "antigravity",
+        "detail": "REQ-082, REQ-083, REQ-085 \u2192 implemented (P12 Documentation, packaging, and open-source release completed)"
+      }
+    ],
+    "retentionDays": 30
+  },
+  "artifacts": {}
+}
