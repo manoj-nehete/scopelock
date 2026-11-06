@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { extname, resolve } from 'node:path';
+import { extname, resolve, sep } from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { within } from './core.js';
 import { runCheck, cancelRun, clearLogs } from './runner.js';
@@ -138,7 +138,7 @@ export async function dashboard(p, port = 4317) {
             const dir = fileURLToPath(new URL('../web-dist/', import.meta.url));
             const path = url.pathname === '/' ? 'index.html' : url.pathname.slice(1);
             const target = resolve(dir, path);
-            if (!target.startsWith(resolve(dir) + '/')) {
+            if (!target.startsWith(resolve(dir) + sep)) {
                 res.writeHead(403).end();
                 return;
             }

@@ -1,4 +1,4 @@
-import { createServer } from 'node:http';import {readFile} from 'node:fs/promises';import {fileURLToPath} from 'node:url';import {join,extname,resolve} from 'node:path';import {randomBytes} from 'node:crypto';
+import { createServer } from 'node:http';import {readFile} from 'node:fs/promises';import {fileURLToPath} from 'node:url';import {join,extname,resolve,sep} from 'node:path';import {randomBytes} from 'node:crypto';
 import {Project,within} from './core.js';import {runCheck,cancelRun,clearLogs} from './runner.js';import {connect,probe} from './adapters.js';
 export async function dashboard(p:Project,port=4317){
  const token=randomBytes(32).toString('hex'),clients=new Set<any>();let snapshot='',refreshing=false;
@@ -36,7 +36,7 @@ export async function dashboard(p:Project,port=4317){
  await refresh();json({ok:true,result});return;
  }
  if(req.method!=='GET'){res.writeHead(405).end();return;}
- const dir=fileURLToPath(new URL('../web-dist/',import.meta.url));const path=url.pathname==='/'?'index.html':url.pathname.slice(1);const target=resolve(dir,path);if(!target.startsWith(resolve(dir)+'/')){res.writeHead(403).end();return;}
+ const dir=fileURLToPath(new URL('../web-dist/',import.meta.url));const path=url.pathname==='/'?'index.html':url.pathname.slice(1);const target=resolve(dir,path);if(!target.startsWith(resolve(dir)+sep)){res.writeHead(403).end();return;}
  const bytes=await readFile(target);res.writeHead(200,{'Content-Type':({'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml'} as Record<string,string>)[extname(target)]??'application/octet-stream'});res.end(bytes);
  }catch(e){res.writeHead(400,{'Content-Type':'application/json'});res.end(JSON.stringify({error:e instanceof Error?e.message:String(e)}));}});
  let actualPort=port;await new Promise<void>((resolve,reject)=>{server.once('error',reject);server.listen(port,'127.0.0.1',()=>{actualPort=(server.address() as any).port;resolve();});});

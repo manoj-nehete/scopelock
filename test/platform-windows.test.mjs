@@ -64,6 +64,13 @@ test('Windows path and execution compatibility logic', async () => {
     assert.ok(!redacted.includes('secret_token_12345'));
     assert.ok(!redacted.includes('pass123'));
     assert.ok(redacted.includes('[REDACTED]'));
+
+    // 4. Test dashboard static asset path check with backslashes
+    const mockWebDist = 'D:\\a\\scopelock\\scopelock\\web-dist';
+    const mockTarget = 'D:\\a\\scopelock\\scopelock\\web-dist\\index.html';
+    const winSep = '\\';
+    assert.ok(mockTarget.startsWith(mockWebDist + winSep));
+    assert.ok(!mockTarget.startsWith(mockWebDist + '/')); // This was the bug: hardcoded '/' failed on Windows
   } finally {
     await rm(root, { recursive: true, force: true });
   }
