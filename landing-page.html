@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScopeLock — The Seatbelt for AI-Assisted Building</title>
+  <meta name="description" content="ScopeLock is a free, local-first, open-source alignment engine and project tracker for anyone building applications with AI coding agents. ₹0 cloud cost, 100% private." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #090a0f;
+      --bg-card: #11131c;
+      --bg-card-hover: #161a27;
+      --border: #232738;
+      --border-focus: #4f46e5;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-glow: rgba(99, 102, 241, 0.25);
+      --accent: #38bdf8;
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.12);
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.12);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.12);
+      --code-bg: #0d0f17;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      color-scheme: dark;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.18) 0%, transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%);
+      background-repeat: no-repeat;
+    }
+
+    /* Top Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9, 10, 15, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #6366f1, #38bdf8);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 16px var(--primary-glow);
+    }
+
+    .logo-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: #fff;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.925rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--text-dim);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 5rem 0 3.5rem;
+      text-align: center;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 9999px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      font-size: 0.825rem;
+      font-weight: 600;
+      margin-bottom: 1.75rem;
+    }
+
+    .pill-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5.5vw, 4.25rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero h1 span.gradient {
+      background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 80%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto 2.5rem;
+      font-weight: 400;
+    }
+
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+    }
+
+    /* Mock Dashboard Preview Window */
+    .mock-window {
+      max-width: 1040px;
+      margin: 0 auto 5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(99, 102, 241, 0.15);
+      text-align: left;
+    }
+
+    .window-header {
+      background: #141724;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot-btn {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .window-title {
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+    }
+
+    .window-body {
+      padding: 1.75rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: #0d0f18;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+    }
+
+    .stat-card.card-blue::before { background: #38bdf8; }
+    .stat-card.card-green::before { background: #10b981; }
+    .stat-card.card-red::before { background: #ef4444; }
+    .stat-card.card-purple::before { background: #a855f7; }
+
+    .stat-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-desc {
+      font-size: 0.775rem;
+      color: var(--text-dim);
+    }
+
+    .live-feed {
+      background: #0d0f18;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    .feed-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.775rem;
+      font-weight: 600;
+    }
+
+    .feed-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.4rem 0;
+      color: var(--text-muted);
+    }
+
+    .feed-tag {
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .tag-verified { background: var(--success-bg); color: #34d399; }
+    .tag-drift { background: var(--warning-bg); color: #fbbf24; }
+    .tag-blocked { background: var(--danger-bg); color: #f87171; }
+    .tag-handoff { background: rgba(56, 189, 248, 0.12); color: #38bdf8; }
+
+    /* Section Styling */
+    section {
+      padding: 5rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 3.5rem;
+    }
+
+    .section-eyebrow {
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .section-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    /* Problem Grid (Why Vibe Coding Breaks) */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .problem-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .problem-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .problem-icon {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .problem-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #fca5a5;
+    }
+
+    .problem-card p {
+      color: var(--text-muted);
+      font-size: 0.925rem;
+    }
+
+    /* Solution Pillars Grid */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .pillar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.25s ease;
+    }
+
+    .pillar-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--primary);
+      box-shadow: 0 10px 30px -10px var(--primary-glow);
+    }
+
+    .pillar-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      margin-bottom: 1.25rem;
+      color: var(--primary);
+    }
+
+    .pillar-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .pillar-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Interactive Features Showcase (Tabs) */
+    .features-showcase {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+
+    .feature-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      background: #0d0f18;
+    }
+
+    .tab-btn {
+      padding: 1rem 1.5rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      background: var(--bg-card);
+      border-bottom-color: var(--accent);
+    }
+
+    .feature-content {
+      padding: 2.5rem;
+      display: none;
+    }
+
+    .feature-content.active {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .feature-info h3 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .feature-info p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .code-preview-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      overflow-x: auto;
+      color: #e2e8f0;
+      position: relative;
+    }
+
+    /* Agent Compatibility Bar */
+    .agent-badges-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+      padding: 2.5rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin: 3rem 0;
+    }
+
+    .agent-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .agent-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    /* Quickstart (0 to 100) */
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .step-num {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), #3b82f6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+
+    .step-body h4 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .step-body p {
+      color: var(--text-muted);
+      font-size: 0.925rem;
+      margin-bottom: 1rem;
+    }
+
+    .code-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    .code-row code {
+      color: #38bdf8;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text);
+      border-color: var(--text-dim);
+    }
+
+    /* FAQ Accordion */
+    .faq-list {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1.05rem;
+      user-select: none;
+    }
+
+    .faq-question:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .faq-answer {
+      padding: 0 1.5rem 1.25rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+    }
+
+    .faq-chevron {
+      transition: transform 0.2s;
+      width: 16px;
+      height: 16px;
+      fill: var(--text-muted);
+    }
+
+    /* CTA Section */
+    .cta-banner {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(56, 189, 248, 0.1));
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 20px;
+      padding: 4.5rem 2rem;
+      text-align: center;
+      margin: 4rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-banner h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .cta-banner p {
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      max-width: 620px;
+      margin: 0 auto 2.5rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 0;
+      color: var(--text-dim);
+      font-size: 0.875rem;
+    }
+
+    .footer-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #1e2235;
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    @media (max-width: 820px) {
+      .nav-links { display: none; }
+      .feature-content.active { grid-template-columns: 1fr; }
+      .agent-badges-bar { flex-direction: column; gap: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        </div>
+        <span>ScopeLock</span>
+      </a>
+
+      <nav class="nav-links">
+        <ul>
+          <li><a href="#why">Why ScopeLock</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#quickstart">Quickstart</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://github.com/manoj-nehete/scopelock" target="_blank" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="#quickstart" class="btn btn-primary">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <div class="container">
+      <section class="hero">
+        <div class="pill-badge">
+          <span class="dot"></span>
+          <span>Free & Open Source • ₹0 Cloud Cost • Local-First Alignment</span>
+        </div>
+
+        <h1>
+          The Seatbelt for <br />
+          <span class="gradient">AI-Assisted Building</span>
+        </h1>
+
+        <p>
+          Don't let coding agents hallucinate completion, jump phases, or break working code. ScopeLock keeps Claude Code, OpenAI Codex, and Antigravity pinned to agreed requirements with inspectable evidence.
+        </p>
+
+        <div class="hero-ctas">
+          <a href="#quickstart" class="btn btn-primary" style="padding: 0.85rem 1.75rem; font-size: 1rem;">
+            Quickstart (0 to 100)
+          </a>
+          <a href="#how-it-works" class="btn btn-secondary" style="padding: 0.85rem 1.75rem; font-size: 1rem;">
+            How It Works
+          </a>
+        </div>
+
+        <!-- Mock Dashboard Window -->
+        <div class="mock-window">
+          <div class="window-header">
+            <div class="window-dots">
+              <span class="dot-btn dot-red"></span>
+              <span class="dot-btn dot-yellow"></span>
+              <span class="dot-btn dot-green"></span>
+            </div>
+            <div class="window-title">ScopeLock Dashboard — localhost:4317</div>
+            <div style="font-size: 0.75rem; color: var(--accent); font-family: var(--font-mono);">● LIVE SYNC</div>
+          </div>
+
+          <div class="window-body">
+            <!-- 4 Overview Summaries -->
+            <div class="summary-grid">
+              <div class="stat-card card-blue">
+                <div class="stat-title">1. Implementation</div>
+                <div class="stat-value" style="color: #38bdf8;">8 / 12</div>
+                <div class="stat-desc">4 In Progress • 0 Blocked</div>
+              </div>
+
+              <div class="stat-card card-green">
+                <div class="stat-title">2. Verification</div>
+                <div class="stat-value" style="color: #34d399;">6 Verified</div>
+                <div class="stat-desc">2 Missing Evidence • 0 Stale</div>
+              </div>
+
+              <div class="stat-card card-red">
+                <div class="stat-title">3. Blockers</div>
+                <div class="stat-value" style="color: #f87171;">0 Active</div>
+                <div class="stat-desc">All active phase dependencies met</div>
+              </div>
+
+              <div class="stat-card card-purple">
+                <div class="stat-title">4. Release Readiness</div>
+                <div class="stat-value" style="color: #c084fc;">P01 Ready</div>
+                <div class="stat-desc">Exit criteria verified with proof</div>
+              </div>
+            </div>
+
+            <!-- Live Feed / Activity Stream -->
+            <div class="live-feed">
+              <div class="feed-header">
+                <span>RECENT ENGINE ACTIVITY</span>
+                <span>STATE REVISION 3</span>
+              </div>
+              <div class="feed-item">
+                <span class="feed-tag tag-verified">PASS</span>
+                <span>Check <code>CHECK-001</code> passed (exit 0, 42ms) — verified <code>REQ-001</code> User Auth</span>
+              </div>
+              <div class="feed-item">
+                <span class="feed-tag tag-drift">DRIFT DETECTED</span>
+                <span>Unlinked file <code>src/payment.ts</code> modified without requirement association</span>
+              </div>
+              <div class="feed-item">
+                <span class="feed-tag tag-handoff">HANDOFF</span>
+                <span>Claude Code finished phase P01; exported context ready for OpenAI Codex</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agent Integration Bar -->
+        <div class="agent-badges-bar">
+          <div class="agent-item">
+            <div class="agent-logo">🤖</div>
+            <span>Google Antigravity</span>
+          </div>
+          <div class="agent-item">
+            <div class="agent-logo">⚡</div>
+            <span>Anthropic Claude Code</span>
+          </div>
+          <div class="agent-item">
+            <div class="agent-logo">🧠</div>
+            <span>OpenAI Codex</span>
+          </div>
+          <div class="agent-item">
+            <div class="agent-logo">🔌</div>
+            <span>Standard Local MCP</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why Vibe Coding Breaks -->
+      <section id="why">
+        <div class="section-header">
+          <div class="section-eyebrow">The Reality of Vibe Coding</div>
+          <h2 class="section-title">Why AI-Assisted Projects Fail Without a Seatbelt</h2>
+          <p class="section-subtitle">
+            Prompting AI to write code feels effortless until subtle hallucinations, context limits, and silent regressions destroy your progress.
+          </p>
+        </div>
+
+        <div class="problem-grid">
+          <div class="problem-card">
+            <div class="problem-icon">🎭</div>
+            <h3>The "Yes Man" Agent</h3>
+            <p>AI models enthusiastically report <em>"I've implemented everything and it works perfectly!"</em> when they haven't actually run tests or checked real outcomes.</p>
+          </div>
+
+          <div class="problem-card">
+            <div class="problem-icon">🏃‍♂️</div>
+            <h3>Premature Leaping</h3>
+            <p>You ask for a simple login box, and the agent begins building billing systems or complex animations before your database or session logic even works.</p>
+          </div>
+
+          <div class="problem-card">
+            <div class="problem-icon">💥</div>
+            <h3>Silent Regressions</h3>
+            <p>Your agent tweaks a button CSS style in Step 10 and accidentally wipes out security headers or database migrations written in Step 2.</p>
+          </div>
+
+          <div class="problem-card">
+            <div class="problem-icon">🧠</div>
+            <h3>Context Amnesia</h3>
+            <p>Switching chat windows or bouncing between Claude, Codex, and Antigravity means the next agent starts blind, guessing what was already finished.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- How ScopeLock Solves It -->
+      <section id="how-it-works">
+        <div class="section-header">
+          <div class="section-eyebrow">The ScopeLock Guarantee</div>
+          <h2 class="section-title">Architected for Total Truth & Verification</h2>
+          <p class="section-subtitle">
+            A shared, local engine that keeps every coding agent disciplined, sequential, and accountable.
+          </p>
+        </div>
+
+        <div class="pillars-grid">
+          <div class="pillar-card">
+            <div class="pillar-icon">🛡️</div>
+            <h3>Implementation ≠ Verification</h3>
+            <p>An AI agent claiming a task is done only updates implementation status to <code>implemented</code>. It <strong>never</strong> marks it as verified until an actual test check passes or you attest to it.</p>
+          </div>
+
+          <div class="pillar-card">
+            <div class="pillar-icon">🚦</div>
+            <h3>Sequential Phase Gates</h3>
+            <p>Phase 2 remains locked until all exit criteria and automated test runs for Phase 1 succeed. Coding agents cannot wander into future features until prerequisites pass.</p>
+          </div>
+
+          <div class="pillar-card">
+            <div class="pillar-icon">🔍</div>
+            <h3>Impact & Drift Detection</h3>
+            <p>ScopeLock hashes workspace files. If an agent modifies a file without a requirement association, or modifies a file that broke previous tests, ScopeLock flags evidence as stale.</p>
+          </div>
+
+          <div class="pillar-card">
+            <div class="pillar-icon">🤝</div>
+            <h3>Universal Agent Handoff</h3>
+            <p>Export a clean, Markdown handoff summary in one command. Start with Claude Code, switch to OpenAI Codex, and finish in Antigravity without losing a single requirement.</p>
+          </div>
+
+          <div class="pillar-card">
+            <div class="pillar-icon">📊</div>
+            <h3>Honest Visual Dashboard</h3>
+            <p>Four independent summaries (Implementation, Verification, Blockers, Release Readiness). No misleading single "99% complete" percentage bar. Every count links to its exact record.</p>
+          </div>
+
+          <div class="pillar-card">
+            <div class="pillar-icon">🔒</div>
+            <h3>₹0 Cost & 100% Local</h3>
+            <p>Runs entirely on your machine via Node.js. No subscriptions, no cloud databases, no external tokens, and no code ever leaves your laptop.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Feature Showcase -->
+      <section id="features">
+        <div class="section-header">
+          <div class="section-eyebrow">Advanced Toolkit</div>
+          <h2 class="section-title">Deep Verification Features</h2>
+          <p class="section-subtitle">
+            Inspect the mechanics that make ScopeLock the gold standard for agentic software engineering.
+          </p>
+        </div>
+
+        <div class="features-showcase">
+          <div class="feature-tabs">
+            <button class="tab-btn active" onclick="switchTab(0)">Coverage Map</button>
+            <button class="tab-btn" onclick="switchTab(1)">Dependency Graph</button>
+            <button class="tab-btn" onclick="switchTab(2)">Change-Impact</button>
+            <button class="tab-btn" onclick="switchTab(3)">Scope Drift</button>
+            <button class="tab-btn" onclick="switchTab(4)">Checkpoints Diff</button>
+            <button class="tab-btn" onclick="switchTab(5)">Release Readiness</button>
+          </div>
+
+          <!-- Tab 0: Coverage Map -->
+          <div class="feature-content active" id="tab-0">
+            <div class="feature-info">
+              <h3>Requirement Coverage Map</h3>
+              <p>Directly links requirements to their associated implementation files, automated test commands, and execution evidence. Instantly see unverified code and gaps.</p>
+              <div class="feature-badges">
+                <span class="badge">Feature A</span>
+                <span class="badge">CLI: scopelock coverage</span>
+                <span class="badge">REST /api/coverage</span>
+              </div>
+            </div>
+            <div class="code-preview-box">
+<span style="color: #64748b;"># Run coverage map</span>
+<span style="color: #38bdf8;">$ scopelock coverage</span>
+
+<span style="color: #34d399;">REQ-001: User Profile Creation</span>
+  Phase: P01 (Core Foundations)
+  Files: src/user.ts, src/types.ts
+  Checks: CHECK-001 (npm test user)
+  Evidence: 1 run (passed, exit 0)
+  Status: <span style="color: #34d399;">VERIFIED</span>
+
+<span style="color: #fbbf24;">REQ-002: Password Validation</span>
+  Phase: P01 (Core Foundations)
+  Files: src/auth.ts
+  Checks: None
+  Status: <span style="color: #fbbf24;">MISSING EVIDENCE</span>
+            </div>
+          </div>
+
+          <!-- Tab 1: Dependency Graph -->
+          <div class="feature-content" id="tab-1">
+            <div class="feature-info">
+              <h3>Dependency Flow & Cycle Detection</h3>
+              <p>Visualizes requirement and phase prerequisites. Identifies exactly what tasks are eligible to begin right now, and rejects accidental cycle proposals before they corrupt state.</p>
+              <div class="feature-badges">
+                <span class="badge">Feature B</span>
+                <span class="badge">CLI: scopelock dependencies --list</span>
+                <span class="badge">Screen-Reader Friendly</span>
+              </div>
+            </div>
+            <div class="code-preview-box">
+<span style="color: #38bdf8;">$ scopelock dependencies --list</span>
+
+[ELIGIBLE TO START]
+• REQ-001: User Profile Creation (P01)
+• REQ-002: Password Validation (P01)
+
+[BLOCKED BY PREREQUISITES]
+• REQ-003: User Profile Page (P02)
+  └── Awaiting: REQ-001, Phase P01 verification
+• REQ-004: Password Reset (P02)
+  └── Awaiting: REQ-002
+            </div>
+          </div>
+
+          <!-- Tab 2: Change-Impact -->
+          <div class="feature-content" id="tab-2">
+            <div class="feature-info">
+              <h3>Change-Impact Tracking</h3>
+              <p>Detects file changes affecting explicitly linked files using SHA-256 fingerprints. Automatically flags previously passed tests as stale so regressions never hide in plain sight.</p>
+              <div class="feature-badges">
+                <span class="badge">Feature C</span>
+                <span class="badge">Git & Non-Git Compatible</span>
+                <span class="badge">Staleness Engine</span>
+              </div>
+            </div>
+            <div class="code-preview-box">
+<span style="color: #38bdf8;">$ scopelock impact</span>
+
+<span style="color: #fbbf24;">[STALE EVIDENCE DETECTED]</span>
+• File modified: src/auth.ts (SHA256 changed)
+  └── Affected: REQ-002 (Password Validation)
+  └── Evidence run RUN-003 invalidated
+  └── Action: Re-run CHECK-002 to re-verify
+            </div>
+          </div>
+
+          <!-- Tab 3: Scope Drift -->
+          <div class="feature-content" id="tab-3">
+            <div class="feature-info">
+              <h3>Scope-Drift Review</h3>
+              <p>Highlights newly created or unlinked files that agents modified without requirement association. Link them to existing tasks or document them as supporting infrastructure.</p>
+              <div class="feature-badges">
+                <span class="badge">Feature G</span>
+                <span class="badge">scopelock drift link</span>
+                <span class="badge">scopelock drift supporting</span>
+              </div>
+            </div>
+            <div class="code-preview-box">
+<span style="color: #38bdf8;">$ scopelock drift</span>
+
+<span style="color: #fbbf24;">[UNLINKED FILES (1)]</span>
+• vite.config.ts (Created by agent)
+
+<span style="color: #64748b;"># Document it as supporting infrastructure:</span>
+<span style="color: #38bdf8;">$ scopelock drift supporting vite.config.ts "Vite build configuration"</span>
+✓ Documented vite.config.ts as supporting file.
+            </div>
+          </div>
+
+          <!-- Tab 4: Checkpoints Diff -->
+          <div class="feature-content" id="tab-4">
+            <div class="feature-info">
+              <h3>Milestone Checkpoints & Differential Progress</h3>
+              <p>Take persistent named snapshots of project scope and execution status. Compare two checkpoints side-by-side to separate honest code progress from scope creep.</p>
+              <div class="feature-badges">
+                <span class="badge">Feature F</span>
+                <span class="badge">scopelock checkpoint create</span>
+                <span class="badge">scopelock checkpoint compare</span>
+              </div>
+            </div>
+            <div class="code-preview-box">
+<span style="color: #38bdf8;">$ scopelock checkpoint compare CKPT-001 current</span>
+
+SCOPE EVOLUTION:
+  + 2 Requirements added (REQ-005, REQ-006)
+  - 0 Requirements removed
+
+IMPLEMENTATION PROGRESS:
+  • REQ-001: pending → implemented
+  • REQ-002: pending → in_progress
+
+VERIFICATION DELTAS:
+  • REQ-001: unverified → verified (CHECK-001)
+            </div>
+          </div>
+
+          <!-- Tab 5: Release Readiness -->
+          <div class="feature-content" id="tab-5">
+            <div class="feature-info">
+              <h3>Release-Readiness Auditor</h3>
+              <p>Audits failed checks, stale evidence, active blockers, and unmet phase criteria. Generates a formal, actionable Markdown report before pushing to production.</p>
+              <div class="feature-badges">
+                <span class="badge">Feature H</span>
+                <span class="badge">scopelock readiness --export</span>
+                <span class="badge">No Fake Green Lights</span>
+              </div>
+            </div>
+            <div class="code-preview-box">
+<span style="color: #38bdf8;">$ scopelock readiness --export release.md</span>
+
+RELEASE READINESS AUDIT: <span style="color: #f87171;">NOT READY</span>
+• Phase P01: <span style="color: #34d399;">PASSED</span> (All criteria verified)
+• Phase P02: <span style="color: #f87171;">BLOCKED</span>
+  └── 1 Failed Check: CHECK-003 (exit 1)
+  └── 1 Stale Evidence item
+  └── 2 Unverified Exit Criteria
+
+✓ Exported release readiness report to release.md
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Plain English Requirements Format -->
+      <section>
+        <div class="section-header">
+          <div class="section-eyebrow">Zero Friction</div>
+          <h2 class="section-title">Requirements in Simple Markdown</h2>
+          <p class="section-subtitle">
+            No complex XML, no proprietary formats. Write your requirements in clean, readable Markdown that you and your AI agent both understand.
+          </p>
+        </div>
+
+        <div style="max-width: 820px; margin: 0 auto; background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; font-family: var(--font-mono); font-size: 0.875rem;">
+<span style="color: #a5b4fc;"># Phase P01: Core Foundations</span>
+<span style="color: #64748b;">- Constraint: Store all data locally on the user machine.</span>
+
+<span style="color: #38bdf8;">## REQ-001: User Profile Creation</span>
+<span style="color: #94a3b8;">- Files: src/user.ts, src/types.ts</span>
+<span style="color: #34d399;">- Acceptance (automated): User can be created with valid username and email.</span>
+
+<span style="color: #38bdf8;">## REQ-002: Password Validation</span>
+<span style="color: #94a3b8;">- Files: src/auth.ts</span>
+<span style="color: #34d399;">- Acceptance (automated): Passwords shorter than 8 characters are rejected.</span>
+
+<span style="color: #a5b4fc;"># Phase P02: User Experience</span>
+<span style="color: #fbbf24;">- Phase depends: P01</span>
+
+<span style="color: #38bdf8;">## REQ-003: Dark Mode Toggle</span>
+<span style="color: #fbbf24;">- Depends: REQ-001</span>
+<span style="color: #94a3b8;">- Files: src/theme.ts</span>
+<span style="color: #a855f7;">- Acceptance (manual): User can toggle between dark and light themes smoothly.</span>
+        </div>
+      </section>
+
+      <!-- Quickstart: 0 to 100 in 3 Minutes -->
+      <section id="quickstart">
+        <div class="section-header">
+          <div class="section-eyebrow">Get Started in 3 Minutes</div>
+          <h2 class="section-title">From 0 to 100 with ScopeLock</h2>
+          <p class="section-subtitle">
+            Follow this simple walkthrough to protect your project right now.
+          </p>
+        </div>
+
+        <div class="steps-container">
+          <!-- Step 1 -->
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h4>Install & Initialize</h4>
+              <p>Clone the repository, build, and initialize ScopeLock in your project directory.</p>
+              <div class="code-row">
+                <code>git clone https://github.com/manoj-nehete/scopelock.git && cd scopelock && npm ci && npm run build && npm link</code>
+                <button class="copy-btn" onclick="copyCode(this, 'git clone https://github.com/manoj-nehete/scopelock.git && cd scopelock && npm ci && npm run build && npm link')">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h4>Import & Lock Agreed Scope</h4>
+              <p>Import your Markdown requirements and confirm the baseline scope revision.</p>
+              <div class="code-row">
+                <code>scopelock init "My App" && scopelock import requirements.md && scopelock confirm</code>
+                <button class="copy-btn" onclick="copyCode(this, 'scopelock init \"My App\" && scopelock import requirements.md && scopelock confirm')">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h4>Connect Your Coding Agent</h4>
+              <p>Configure local MCP automatically for your agent of choice.</p>
+              <div class="code-row">
+                <code>scopelock connect claude-code # Or 'scopelock connect antigravity' or 'codex'</code>
+                <button class="copy-btn" onclick="copyCode(this, 'scopelock connect claude-code')">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="step-card">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h4>Launch the Visual Dashboard</h4>
+              <p>Open the interactive graphical interface on localhost:4317 to inspect everything.</p>
+              <div class="code-row">
+                <code>scopelock dashboard 4317</code>
+                <button class="copy-btn" onclick="copyCode(this, 'scopelock dashboard 4317')">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section id="faq">
+        <div class="section-header">
+          <div class="section-eyebrow">Common Questions</div>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>Does ScopeLock require any paid APIs, tokens, or subscriptions?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </div>
+            <div class="faq-answer">
+              No. ScopeLock is 100% free, open-source under the MIT license, and costs ₹0 in infrastructure. It runs entirely on your local machine using Node.js without any cloud database or AI API key required for the core engine.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>Does any code or project data leave my local machine?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </div>
+            <div class="faq-answer">
+              Never. ScopeLock stores all state in a simple local <code>.scopelock/</code> directory in your project root. There are no tracking scripts, telemetry, or remote servers. Even command output logs automatically redact sensitive API keys and tokens before storing locally.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>Can an AI agent run dangerous commands without my permission?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </div>
+            <div class="faq-answer">
+              No. Coding agents cannot execute arbitrary command checks. All check definitions must be explicitly reviewed and approved by you (via <code>scopelock check approve &lt;ID&gt;</code>) before execution is permitted.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>How does ScopeLock connect to Claude Code, Codex, or Antigravity?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </div>
+            <div class="faq-answer">
+              ScopeLock features built-in adapters that write standard local configuration files (like <code>.mcp.json</code>, <code>CLAUDE.md</code>, <code>AGENTS.md</code>, or <code>.agents/rules</code>) connecting directly to the local ScopeLock Model Context Protocol (MCP) server.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+              <span>What happens if my agent hallucinates or goes out of scope?</span>
+              <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </div>
+            <div class="faq-answer">
+              ScopeLock immediately catches it. If an agent tries to modify unapproved files, ScopeLock highlights it in the Scope Drift review. If it claims a requirement is complete, it stays strictly in <code>implemented</code> status until actual test evidence passes.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Final CTA Banner -->
+      <div class="cta-banner">
+        <h2>Ready to Vibe Code with Complete Peace of Mind?</h2>
+        <p>Keep your coding agents aligned, prevent regressions, and verify every single phase with real evidence.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <a href="#quickstart" class="btn btn-primary" style="padding: 0.85rem 2rem; font-size: 1.05rem;">
+            Install ScopeLock Free
+          </a>
+          <a href="https://github.com/manoj-nehete/scopelock" target="_blank" class="btn btn-secondary" style="padding: 0.85rem 2rem; font-size: 1.05rem;">
+            Star on GitHub ⭐
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <div>
+        <strong>ScopeLock</strong> — The seatbelt for AI-assisted building.
+        <div style="font-size: 0.8rem; margin-top: 0.25rem;">MIT Licensed. Created by Manoj Nehete and ScopeLock contributors.</div>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/manoj-nehete/scopelock" target="_blank">GitHub</a>
+        <a href="https://github.com/manoj-nehete/scopelock/blob/main/docs/USER_GUIDE.md" target="_blank">User Guide</a>
+        <a href="https://github.com/manoj-nehete/scopelock/blob/main/PLAN.md" target="_blank">Roadmap</a>
+        <a href="https://github.com/manoj-nehete/scopelock/blob/main/LICENSE" target="_blank">License</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast notification -->
+  <div id="toast">Copied command to clipboard!</div>
+
+  <!-- JavaScript for Tabs, FAQ, Copy -->
+  <script>
+    function switchTab(index) {
+      const tabs = document.querySelectorAll('.tab-btn');
+      const contents = document.querySelectorAll('.feature-content');
+      tabs.forEach((tab, i) => {
+        tab.classList.toggle('active', i === index);
+      });
+      contents.forEach((content, i) => {
+        content.classList.toggle('active', i === index);
+      });
+    }
+
+    function toggleFaq(el) {
+      const parent = el.parentElement;
+      parent.classList.toggle('open');
+    }
+
+    function copyCode(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        const origText = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => {
+          toast.classList.remove('show');
+          btn.innerText = origText;
+        }, 2200);
+      });
+    }
+  </script>
+</body>
+</html>
