@@ -115,9 +115,10 @@ export async function probe(p, agent) {
     try {
         await client.connect(transport);
         const tools = await client.listTools();
+        const coreTools = tools.tools.filter(t => ['get_handoff', 'get_requirements', 'get_requirement', 'get_phases', 'record_implementation', 'record_evidence', 'propose_scope_change', 'list_checks', 'run_check', 'get_run'].includes(t.name));
         await p.mutate('connection_checked', 'human', agent, s => { if (!s)
             throw Error('Missing project'); s.integrations[agent] = { ...s.integrations[agent], installed: s.integrations[agent]?.installed ?? false, time: s.integrations[agent]?.time ?? now(), lastCheck: now() }; return s; });
-        return { ok: true, tools: tools.tools.length, note: 'Local MCP handshake passed. Actual agent session remains unverified.' };
+        return { ok: true, tools: coreTools.length, totalTools: tools.tools.length, note: 'Local MCP handshake passed. Actual agent session remains unverified.' };
     }
     finally {
         await client.close();

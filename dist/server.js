@@ -64,6 +64,49 @@ export async function dashboard(p, port = 4317) {
                 res.end(await p.report());
                 return;
             }
+            if (req.method === 'GET' && url.pathname === '/api/coverage') {
+                json(await p.coverage());
+                return;
+            }
+            if (req.method === 'GET' && url.pathname === '/api/dependencies') {
+                json(await p.dependencyGraph());
+                return;
+            }
+            if (req.method === 'GET' && url.pathname === '/api/impact') {
+                json(await p.changeImpact());
+                return;
+            }
+            if (req.method === 'GET' && url.pathname === '/api/drift') {
+                json(await p.scopeDrift());
+                return;
+            }
+            if (req.method === 'GET' && url.pathname === '/api/readiness') {
+                json(await p.releaseReadiness());
+                return;
+            }
+            if (req.method === 'GET' && url.pathname === '/api/readiness/report') {
+                res.writeHead(200, { 'Content-Type': 'text/markdown', 'Content-Disposition': 'attachment; filename="release-readiness-report.md"' });
+                res.end(await p.exportReadinessReport());
+                return;
+            }
+            if (req.method === 'GET' && url.pathname === '/api/handoff') {
+                json(await p.handoff());
+                return;
+            }
+            if (req.method === 'GET' && url.pathname === '/api/checkpoints') {
+                json(await p.listCheckpoints());
+                return;
+            }
+            if (req.method === 'GET' && url.pathname === '/api/checkpoints/compare') {
+                const from = url.searchParams.get('from') ?? '', to = url.searchParams.get('to') ?? 'current';
+                json(await p.compareCheckpoints(from, to));
+                return;
+            }
+            if (req.method === 'GET' && url.pathname === '/api/timeline') {
+                const q = (name) => url.searchParams.get(name) ?? undefined;
+                json(await p.timeline({ phase: q('phase'), requirement: q('requirement'), actor: q('actor'), type: q('type'), result: q('result'), date: q('date'), query: q('query') }));
+                return;
+            }
             if (req.method === 'POST' && url.pathname === '/api/action') {
                 if (req.headers['x-scopelock-token'] !== token || req.headers['content-type'] !== 'application/json') {
                     json({ error: 'Invalid local session' }, 403);
@@ -124,6 +167,27 @@ export async function dashboard(p, port = 4317) {
                         break;
                     case 'doctor':
                         result = await p.doctor();
+                        break;
+                    case 'checkpoint':
+                        result = await p.createCheckpoint(a.name, a.note);
+                        break;
+                    case 'compareCheckpoints':
+                        result = await p.compareCheckpoints(a.fromId, a.toId);
+                        break;
+                    case 'saveFilter':
+                        result = await p.saveFilter(a.filter);
+                        break;
+                    case 'deleteFilter':
+                        result = await p.deleteFilter(a.id);
+                        break;
+                    case 'renameFilter':
+                        result = await p.renameFilter(a.id, a.name);
+                        break;
+                    case 'linkFile':
+                        result = await p.linkFileToRequirement(a.requirement, a.file);
+                        break;
+                    case 'addSupportingFile':
+                        result = await p.addSupportingFile(a.file, a.reason);
                         break;
                     default: throw Error('Unknown action');
                 }

@@ -268,7 +268,15 @@ One of ScopeLock's greatest strengths is seamless context handoff between differ
 | `scopelock confirm` | Lock the baseline scope revision |
 | `scopelock status` | View current project status summary |
 | `scopelock dashboard [PORT]` | Start the local web dashboard (default: 4317) |
-| `scopelock handoff` | View active phase, blockers, constraints, and next eligible task |
+| `scopelock handoff [--export [FILE]]` | View or export active phase, blockers, constraints, and next eligible task as Markdown |
+| `scopelock coverage` | View requirement coverage map (files, checks, evidence, missing links) |
+| `scopelock dependencies [--list]` | Inspect phase & requirement dependency graph, blockers, and eligible work |
+| `scopelock impact` | Run change-impact tracking to detect modified files and flag affected evidence |
+| `scopelock drift [link REQ FILE \| supporting FILE REASON]` | Inspect unlinked workspace files, link files to requirements, or document supporting infrastructure |
+| `scopelock checkpoint [create NAME \| compare ID1 [ID2] \| list]` | Create named checkpoints or run differential progress comparisons |
+| `scopelock readiness [--export [FILE]]` | Run release-readiness audit or export actionable Markdown report |
+| `scopelock timeline [--phase P --req R --actor A --date D]` | Inspect multi-dimensional activity log filtered by phase, requirement, agent, or date |
+| `scopelock filters [save \| delete \| rename \| list]` | Manage persistent dashboard and CLI search filters |
 | `scopelock update <REQ-ID> <STATUS>` | Update requirement status (`not_started`, `in_progress`, `implemented`, `blocked`) |
 | `scopelock phase activate <PHASE-ID>` | Advance to a phase (requires dependencies verified, or override reason) |
 | `scopelock check define <FILE.json>` | Store a new check definition |

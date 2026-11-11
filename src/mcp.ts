@@ -10,6 +10,14 @@ export async function serveMcp(p:Project,agent='agent'){
  tool('record_evidence','Record agent-reported evidence. It does not count as human verification.',{criterion:z.string(),result:z.enum(['passed','failed']),note:z.string(),artifact:z.string().optional()},async a=>{await p.evidence(a.criterion,a.result,a.note,'agent',a.artifact,agent);return {recorded:true,origin:'agent'};});
  tool('propose_scope_change','Propose replacement requirements Markdown for human review.',{source:z.string(),reason:z.string()},async a=>{const s=await p.propose(a.source,a.reason,agent);return s.proposals.at(-1);});
  tool('list_checks','Read check definitions and approval status.',{},async()=> (await p.read()).checks);
+ tool('get_coverage','Read requirement coverage map linking requirements, files, checks, and evidence.',{},()=>p.coverage());
+ tool('get_dependencies','Read dependency graph, blockers, and eligible-to-start work.',{},()=>p.dependencyGraph());
+ tool('get_impact','Read change-impact analysis for modified files.',{},()=>p.changeImpact());
+ tool('get_drift','Read scope-drift review for unlinked files.',{},()=>p.scopeDrift());
+ tool('get_readiness','Read release-readiness assessment and blockers.',{},()=>p.releaseReadiness());
+ tool('list_checkpoints','Read persistent project checkpoints.',{},()=>p.listCheckpoints());
+ tool('compare_checkpoints','Compare two checkpoints or checkpoint vs current.',{fromId:z.string(),toId:z.string().optional()},async a=>p.compareCheckpoints(a.fromId,a.toId??'current'));
+ tool('get_timeline','Read filtered build timeline activity events.',{phase:z.string().optional(),requirement:z.string().optional(),actor:z.string().optional(),type:z.string().optional(),result:z.string().optional(),date:z.string().optional(),query:z.string().optional()},async a=>p.timeline(a));
  tool('run_check','Run a previously human-approved check. May take up to its configured timeout.',{id:z.string()},async a=>{const s=await runCheck(p,a.id,agent);const r=s.runs.filter(r=>r.checkId===a.id).at(-1);return r?{...r,output:r.output.slice(-12000)}:null;});
  tool('get_run','Read bounded check output.',{id:z.string()},async a=>{const r=(await p.read()).runs.find(r=>r.id===a.id);if(!r)throw Error('Unknown run');return {...r,output:r.output.slice(-12000)};});
  await p.mutate('agent_connected',agent,'MCP session initialized',s=>{if(!s)throw Error('Initialize first');if(s.integrations[agent])s.integrations[agent].lastActivity=now();return s;});

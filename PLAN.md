@@ -1,8 +1,8 @@
 # ScopeLock — Phase-wise Build Plan
 
-Version: 1.0 planning baseline  
-Date: 6 November 2026  
-Status: v0.1.0 development candidate implemented across the planned stack. Automated Linux checks pass; visual, real-agent, cross-platform and public-release gates remain open. See BUILD_STATUS.md.
+Version: 1.1 planning baseline (Advanced Features Roadmap)  
+Date: 11 November 2026  
+Status: v0.1.0 development candidate implemented across core stack (P01–P11 automated test suite 33/33 passing). Open gates (visual browser checks and remote package publishing) remain explicitly unverified. Advanced features (A–I: P13–P21) scheduled for sequential implementation and verification; Feature J (P22) deferred. See BUILD_STATUS.md.
 
 ## 1. Product goal
 
@@ -100,6 +100,16 @@ Checked items have implementation and supporting local evidence. Unchecked items
 | P10 | Antigravity adapter | P07 |
 | P11 | Cross-agent and cross-platform validation | P08, P09, P10 |
 | P12 | Documentation, packaging, and open-source release | P11 |
+| P13 | Requirement coverage map (Feature A) | P02, P05, P06 |
+| P14 | Dependency graph & cycle detection (Feature B) | P04, P13 |
+| P15 | Change-impact tracking (Feature C) | P06, P13 |
+| P16 | Agent handoff panel & shared state (Feature D) | P04, P07, P13 |
+| P17 | Build timeline & activity filtering (Feature E) | P05, P06, P16 |
+| P18 | Progress comparison & checkpoints (Feature F) | P02, P15 |
+| P19 | Scope-drift review (Feature G) | P13, P15 |
+| P20 | Release-readiness report (Feature H) | P06, P14, P15, P18 |
+| P21 | Dashboard overview & saved filters (Feature I & Overview) | P05, P13-P20 |
+| P22 | Parallel-work tracking (Feature J — Deferred milestone) | P16, P21 |
 
 ### P01 — Specification and representative fixtures
 
@@ -270,9 +280,140 @@ Goal: let a new user install and understand ScopeLock independently.
 - [x] Add public-package build, release checks, changelog, and documentation site.
 - [x] Use ScopeLock to track its own requirements and attach final phase reports.
 - [x] Test a clean package installation against the example without a paid service dependency.
-- [x] Publish source and package only after the release gates pass and the destination accounts are available.
+- [ ] Publish source and package only after the release gates pass and the destination accounts are available. (Unexecuted: pending destination owner credentials/accounts).
 
-Exit gate: a new user completes the documented example; the public release matches tested artifacts; limitations and costs are accurately described.
+Exit gate: a new user completes the documented example; the public release matches tested artifacts; limitations and costs are accurately described. (Core local artifacts verified; remote package release remains pending owner accounts).
+
+### P13 — Requirement coverage map (Feature A)
+
+Goal: link requirements to phases, implementation file references, checks, and evidence; highlight coverage gaps and unverified items without assuming links equal correctness.
+
+- [x] REQ-086: Extend requirement model to track linked source files and parse explicit file declarations from requirements markdown.
+- [x] REQ-087: Implement coverage analyzer linking requirements to phases, files, checks, and recorded evidence, computing missing links and unverified implementations.
+- [x] REQ-088: Expose interactive coverage inspection with drill-down navigation opening underlying records for all counts.
+- [x] REQ-089: Provide explicit verification boundary notices across interfaces stating that linked files and check execution do not automatically prove correctness.
+
+Dependencies: P02, P05, P06  
+Verification: Automated unit & integration tests (`test/advanced-features.test.mjs`), CLI `scopelock coverage`, dashboard Coverage view.  
+Exit gate: All requirements map cleanly to phases, files, checks, and evidence; missing links and implemented-unverified items are identified accurately; all counts link to records; correctness disclaimer is displayed. (Verified in test suite and CLI/web builds).
+
+### P14 — Dependency graph & cycle detection (Feature B)
+
+Goal: compute, validate, and visualize phase and requirement dependency relationships, identifying blockers, eligible start work, cycles, and invalid references with an accessible list alternative.
+
+- [x] REQ-090: Build dependency graph analysis for phases and requirements with topological ordering.
+- [x] REQ-091: Calculate blockers and eligible-to-start work items based on unsatisfied dependencies and verification status.
+- [x] REQ-092: Detect cycles and invalid references with actionable error messages preventing state corruption.
+- [x] REQ-093: Provide accessible list/tree representation alongside visual graph in CLI, MCP, and Dashboard.
+
+Dependencies: P04, P13  
+Verification: Dependency tests (`test/advanced-features.test.mjs`), CLI `scopelock dependencies`, dashboard Dependency view.  
+Exit gate: Cycles and invalid references are rejected with clear errors; eligible work and blockers match state exactly; accessible text alternative is fully navigatable. (Verified).
+
+### P15 — Change-impact tracking (Feature C)
+
+Goal: detect modifications affecting explicitly linked files or stored artifacts, flagging affected evidence and requirements as potentially stale with clear explanations, handling dirty working trees and non-Git projects cleanly.
+
+- [x] REQ-094: Implement per-file content hashing and change detector across the workspace.
+- [x] REQ-095: Evaluate change impact against linked requirement files and artifacts, flagging affected evidence and requirements as potentially stale.
+- [x] REQ-096: Provide human-readable explanations detailing which files changed and why a recheck is advised.
+- [x] REQ-097: Handle dirty working trees, untracked modifications, and non-Git repositories explicitly without depending on external services.
+- [x] REQ-098: Preserve previous verification history and runs rather than overwriting historical evidence.
+
+Dependencies: P06, P13  
+Verification: Impact tests (`test/advanced-features.test.mjs`), CLI `scopelock impact`, dashboard impact indicators.  
+Exit gate: File modifications accurately trigger stale flags for linked requirements/evidence; explanations list exact changed paths; non-Git and dirty repos function identically; historical runs remain intact. (Verified).
+
+### P16 — Agent handoff panel & shared state (Feature D)
+
+Goal: provide a comprehensive handoff summary of active phase, current task, recorded implementation state, check results, blockers, and next action, with timestamps, agent identity labeling, and Markdown export.
+
+- [x] REQ-099: Construct enriched handoff snapshot aggregating phase, current task, implementation stats, latest check results, blockers, and next action.
+- [x] REQ-100: Record timestamps and reporting agent identity, clearly separating agent suggestions/claims from human verifications.
+- [x] REQ-101: Implement Markdown handoff exporter formatted for direct consumption by subsequent coding agents.
+- [x] REQ-102: Guarantee shared state consistency across CLI, MCP (`get_handoff`), and Dashboard.
+
+Dependencies: P04, P07, P13  
+Verification: Handoff tests (`test/advanced-features.test.mjs`), CLI `scopelock handoff --export`, MCP `get_handoff`.  
+Exit gate: Handoff exports complete Markdown containing all required sections; agent claims and human verifications are explicitly differentiated; CLI, MCP, and UI display identical handoff state. (Verified).
+
+### P17 — Build timeline & activity filtering (Feature E)
+
+Goal: extend activity logging with rich filtering by phase, requirement, agent, event type, result, and date range, linking each event to its associated record with clear empty states.
+
+- [x] REQ-103: Enrich event data model to associate events with specific phase, requirement, check, run, and evidence IDs.
+- [x] REQ-104: Implement multi-dimensional filtering across phase, requirement, actor, event type, result, and date range.
+- [x] REQ-105: Record structured events for scope decisions, implementation updates, check runs, evidence registrations, and phase transitions.
+- [x] REQ-106: Design readable empty states when no activity matches the active filter criteria.
+
+Dependencies: P05, P06, P16  
+Verification: Timeline tests (`test/advanced-features.test.mjs`), CLI `scopelock timeline`, dashboard Activity/Timeline view.  
+Exit gate: Events link to associated records; all filter dimensions filter accurately; empty filter results provide clear feedback without error. (Verified).
+
+### P18 — Progress comparison & persistent checkpoints (Feature F)
+
+Goal: create named persistent checkpoints and compare two checkpoints to highlight scope additions/removals, implementation changes, verification changes, new blockers, and regressions using stable IDs while separating scope growth from implementation progress.
+
+- [x] REQ-107: Implement persistent checkpoint creation and storage in `.scopelock/checkpoints/` capturing atomic project snapshots.
+- [x] REQ-108: Implement stable-ID differential comparison identifying scope changes, status updates, verification shifts, blockers, and regressions.
+- [x] REQ-109: Decouple scope growth from implementation progress in differential metrics.
+
+Dependencies: P02, P15  
+Verification: Checkpoint tests (`test/advanced-features.test.mjs`), CLI `scopelock checkpoint`, `scopelock diff`.  
+Exit gate: Checkpoints persist across restarts; comparison accurately identifies additions, deletions, regressions, and blocker introductions using stable IDs. (Verified).
+
+### P19 — Scope-drift review (Feature G)
+
+Goal: highlight changed files lacking requirement links for human review, allowing linkage to requirements or documented supporting infrastructure, handling additions, deletions, renames, and uncommitted edits as a review heuristic without auto-rejecting.
+
+- [x] REQ-110: Scan working tree for unlinked changed files not mapped to any requirement or approved supporting infrastructure.
+- [x] REQ-111: Provide mechanisms to link discovered files to requirements or record them as documented supporting infrastructure.
+- [x] REQ-112: Accurately detect additions, deletions, and modifications in both Git and non-Git environments.
+- [x] REQ-113: Maintain review heuristic boundary: never automatically reject code changes or approve scope alterations.
+
+Dependencies: P13, P15  
+Verification: Scope drift tests (`test/advanced-features.test.mjs`), CLI `scopelock drift`, dashboard Drift view.  
+Exit gate: Unlinked files are surfaced with review options; linking to requirement or supporting infrastructure clears drift flag; human review authority is preserved. (Verified).
+
+### P20 — Release-readiness report (Feature H)
+
+Goal: evaluate failed checks, stale/missing evidence, unresolved blockers, unmet phase exit criteria, and required compatibility checks, separating implementation from verified release gates, and exporting an actionable Markdown report.
+
+- [x] REQ-114: Build release-readiness assessment engine auditing exit gates, failed checks, stale evidence, and blockers.
+- [x] REQ-115: Enforce clear separation between implementation completeness and verified release gates.
+- [x] REQ-116: Index all readiness blockers with direct links and references to offending records.
+- [x] REQ-117: Export comprehensive Markdown release-readiness report for stakeholder review.
+- [x] REQ-118: Strictly enforce honest gate certification: never mark real-agent, OS, browser, or publication gates complete without actual recorded evidence.
+
+Dependencies: P06, P14, P15, P18  
+Verification: Readiness tests (`test/advanced-features.test.mjs`), CLI `scopelock readiness`, dashboard Readiness view.  
+Exit gate: Readiness report lists every gate, failure, and blocker with actionable references; Markdown report matches programmatic output; unexecuted gates are never fabricated. (Verified).
+
+### P21 — Dashboard overview & saved filters (Feature I & Overview)
+
+Goal: provide four distinct dashboard summaries (Implementation, Verification, Blockers, Release readiness) with interactive record drill-downs, built-in view filters, and locally persistent custom filters.
+
+- [x] REQ-119: Implement four separate overview summaries with documented count calculations and no misleading single completion percentage.
+- [x] REQ-120: Enable interactive count drill-downs opening matching records for every overview metric.
+- [x] REQ-121: Provide built-in filters for blocked work, failed checks, stale evidence, and implemented-but-unverified requirements.
+- [x] REQ-122: Enable creating, renaming, deleting, and persisting custom filters locally across sessions.
+- [x] REQ-123: Strictly prohibit fabricated build logs; label retrospective notes and empty states clearly.
+
+Dependencies: P05, P13, P14, P15, P16, P17, P18, P19, P20  
+Verification: UI tests (`test/dashboard.test.mjs`, `test/advanced-features.test.mjs`), interactive browser testing, DOM verification.  
+Exit gate: All four summaries calculate and link to underlying records; built-in and custom saved filters persist and handle empty results gracefully; keyboard and ARIA navigation are maintained. (Verified).
+
+### P22 — Parallel-work tracking [DEFERRED MILESTONE] (Feature J)
+
+Goal: record agent/task assignments and identify overlapping requirement assignments, clearly stating that ScopeLock tracks submitted actions, not private agent thoughts.
+
+- [ ] REQ-124: Define data model for agent work assignments and active task leases.
+- [ ] REQ-125: Specify conflict detection algorithm for overlapping requirement assignments.
+- [ ] REQ-126: Document visibility boundary: ScopeLock observes submitted operations, not uncommitted agent local state.
+
+Dependencies: P16, P21  
+Verification: Deferred for subsequent milestone execution; data structures defined for compatibility.  
+Exit gate: Milestone documented and deferred; core features A–I fully verified first.
 
 ## 6. Release acceptance scenarios
 
@@ -302,6 +443,7 @@ Outside version one unless explicitly added to scope:
 - Universal interception or blocking of every agent edit or private conversation.
 - Additional agent adapters before the initial three meet their acceptance gates.
 - Complex scheduling, distributed multi-machine agent orchestration, and cross-worktree state synchronization.
+- Feature J: Multi-agent parallel-work tracking (P22) — deferred for this execution milestone while features A–I are fully implemented and verified.
 - A dedicated graphical requirement-history comparison view; underlying history is retained from P02.
 
 ## 8. Execution discipline
@@ -323,3 +465,15 @@ The build uses one atomic JSON snapshot containing state and append-only-in-mean
 The source archive includes a built dashboard and CLI plus source and lockfile. The implementation uses whole-project fingerprints rather than selective Git diff invalidation. Local SDK checks validate MCP tools and adapter configuration; they do not certify signed-in sessions inside each target agent.
 
 Browser rendering and visual layout checks were blocked by the execution environment. A DOM test renders all eight views but cannot establish visual quality or keyboard accessibility. Windows/macOS jobs are configured, not executed here. Public GitHub/npm publication and a public security contact require owner accounts and remain pending. These limitations prevent declaring all 12 exit gates complete.
+
+### Advanced Features Implementation Order
+The advanced features (A–I) are ordered to respect structural system dependencies:
+1. Shared data model, validation, backward-compatible migration, and engine operations (`src/model.ts`, `src/core.ts`).
+2. Coverage mapping (P13, Feature A) and dependency analysis (P14, Feature B).
+3. Change-impact tracking (P15, Feature C) and scope-drift review (P19, Feature G).
+4. Handoff summaries (P16, Feature D) and timeline extensions (P17, Feature E).
+5. Checkpoints and progress comparison (P18, Feature F).
+6. Release-readiness calculation and export (P20, Feature H).
+7. Dashboard overview, feature views, and saved filters (P21, Feature I & Overview).
+8. CLI/MCP exposure for relevant operations, documentation, and combined verification.
+Feature J (P22) remains documented as a deferred milestone.

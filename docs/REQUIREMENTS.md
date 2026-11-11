@@ -280,3 +280,156 @@ Derived from the agreed PLAN.md. These IDs track ScopeLock itself. Each acceptan
 
 ## REQ-085: Publish source and package only after the release gates pass and the destination accounts are available.
 - Acceptance: Publish source and package only after the release gates pass and the destination accounts are available.
+
+# Phase P13: Requirement coverage map (Feature A)
+- Phase depends: P02, P05, P06
+
+## REQ-086: Extend requirement model to track linked source files and parse explicit file declarations from requirements markdown.
+- Acceptance: Requirement model tracks linked source files and parses - Files: lines from markdown.
+
+## REQ-087: Implement coverage analyzer linking requirements to phases, files, checks, and recorded evidence.
+- Acceptance: Coverage analyzer calculates missing links and implemented-unverified items across all requirements.
+
+## REQ-088: Expose interactive coverage inspection with drill-down navigation opening underlying records.
+- Acceptance: Coverage summary counts link directly to underlying requirement records.
+
+## REQ-089: Provide explicit verification boundary notices across interfaces stating that links do not prove correctness.
+- Acceptance: Coverage map interfaces display explicit notice that linked files and check execution do not automatically prove correctness.
+
+# Phase P14: Dependency graph & cycle detection (Feature B)
+- Phase depends: P04, P13
+
+## REQ-090: Build dependency graph analysis for phases and requirements with topological ordering.
+- Acceptance: Topological dependency tree is generated for phases and requirements.
+
+## REQ-091: Calculate blockers and eligible-to-start work items based on unsatisfied dependencies.
+- Acceptance: Blockers list explicit reasons and eligible-to-start items are accurately identified.
+
+## REQ-092: Detect cycles and invalid references with actionable error messages.
+- Acceptance: Circular dependencies and invalid references are rejected without corrupting state.
+
+## REQ-093: Provide accessible list/tree representation alongside visual graph.
+- Acceptance: Full accessible text alternative is provided for dependency relationships.
+
+# Phase P15: Change-impact tracking (Feature C)
+- Phase depends: P06, P13
+
+## REQ-094: Implement per-file content hashing and change detector across the workspace.
+- Acceptance: Per-file SHA-256 fingerprinting detects modified, added, and deleted workspace files.
+
+## REQ-095: Evaluate change impact against linked requirement files and artifacts, flagging affected evidence as stale.
+- Acceptance: Modifying a linked file flags the associated criteria and requirement evidence as stale.
+
+## REQ-096: Provide human-readable explanations detailing which files changed and why a recheck is advised.
+- Acceptance: Impact report details exact modified paths and explains the necessity of re-running checks.
+
+## REQ-097: Handle dirty working trees, untracked modifications, and non-Git repositories explicitly.
+- Acceptance: Change detection operates consistently in dirty working trees and non-Git environments.
+
+## REQ-098: Preserve previous verification history and runs rather than overwriting historical evidence.
+- Acceptance: Prior check runs and evidence records remain visible in history after staleness detection.
+
+# Phase P16: Agent handoff panel & shared state (Feature D)
+- Phase depends: P04, P07, P13
+
+## REQ-099: Construct enriched handoff snapshot aggregating phase, current task, implementation stats, runs, blockers, and next action.
+- Acceptance: Handoff returns complete project state snapshot with next actionable task.
+
+## REQ-100: Record timestamps and reporting agent identity, clearly separating agent claims from human verifications.
+- Acceptance: Handoff displays timestamps, agent identity, and differentiates agent notes from verified passes.
+
+## REQ-101: Implement Markdown handoff exporter formatted for direct consumption by subsequent coding agents.
+- Acceptance: Exported Markdown handoff contains structured sections ready for coding agent context ingestion.
+
+## REQ-102: Guarantee shared state consistency across CLI, MCP, and Dashboard.
+- Acceptance: CLI handoff, MCP get_handoff, and Dashboard handoff render identical state.
+
+# Phase P17: Build timeline & activity filtering (Feature E)
+- Phase depends: P05, P06, P16
+
+## REQ-103: Enrich event data model to associate events with specific phase, requirement, check, run, and evidence IDs.
+- Acceptance: Event records link to associated entity IDs.
+
+## REQ-104: Implement multi-dimensional filtering across phase, requirement, actor, event type, result, and date range.
+- Acceptance: Timeline query filters accurately across all defined dimensions.
+
+## REQ-105: Record structured events for scope decisions, updates, check runs, evidence registrations, and phase transitions.
+- Acceptance: System operations emit structured events into the atomic timeline.
+
+## REQ-106: Design readable empty states when no activity matches the active filter criteria.
+- Acceptance: Filter queries with zero matches return clear, actionable empty state messages.
+
+# Phase P18: Progress comparison & persistent checkpoints (Feature F)
+- Phase depends: P02, P15
+
+## REQ-107: Implement persistent checkpoint creation and storage capturing atomic project snapshots.
+- Acceptance: Checkpoints persist across project reloads and capture full project state.
+
+## REQ-108: Implement stable-ID differential comparison identifying scope changes, status updates, verification shifts, blockers, and regressions.
+- Acceptance: Comparing two checkpoints identifies added/removed requirements, status changes, and regressions.
+
+## REQ-109: Decouple scope growth from implementation progress in differential metrics.
+- Acceptance: Differential metrics report scope growth delta separately from implementation progress delta.
+
+# Phase P19: Scope-drift review (Feature G)
+- Phase depends: P13, P15
+
+## REQ-110: Scan working tree for unlinked changed files not mapped to any requirement or approved supporting infrastructure.
+- Acceptance: Scope drift review lists all unlinked workspace files.
+
+## REQ-111: Provide mechanisms to link discovered files to requirements or record them as documented supporting infrastructure.
+- Acceptance: Users can link unlinked files to requirements or add them to documented supporting infrastructure.
+
+## REQ-112: Accurately detect additions, deletions, and modifications in both Git and non-Git environments.
+- Acceptance: Workspace file scans handle additions, deletions, and modifications across Git and non-Git setups.
+
+## REQ-113: Maintain review heuristic boundary: never automatically reject code changes or approve scope alterations.
+- Acceptance: Drift review functions strictly as a human review heuristic without automatic mutation.
+
+# Phase P20: Release-readiness report (Feature H)
+- Phase depends: P06, P14, P15, P18
+
+## REQ-114: Build release-readiness assessment engine auditing exit gates, failed checks, stale evidence, and blockers.
+- Acceptance: Readiness engine audits all phase exit criteria, failed runs, stale criteria, and active blockers.
+
+## REQ-115: Enforce clear separation between implementation completeness and verified release gates.
+- Acceptance: Implemented counts and verified exit gates are reported as separate dimensions.
+
+## REQ-116: Index all readiness blockers with direct links and references to offending records.
+- Acceptance: Each readiness finding links directly to the source requirement, run, or phase.
+
+## REQ-117: Export comprehensive Markdown release-readiness report for stakeholder review.
+- Acceptance: Markdown release-readiness report matches programmatic audit results.
+
+## REQ-118: Strictly enforce honest gate certification: never mark gates complete without actual recorded evidence.
+- Acceptance: Release readiness cannot claim ready while required criteria or gates remain unverified.
+
+# Phase P21: Dashboard overview & saved filters (Feature I & Overview)
+- Phase depends: P05, P13, P14, P15, P16, P17, P18, P19, P20
+
+## REQ-119: Implement four separate overview summaries with documented count calculations and no single completion percentage.
+- Acceptance: Dashboard overview renders Implementation, Verification, Blockers, and Release Readiness summaries.
+
+## REQ-120: Enable interactive count drill-downs opening matching records for every overview metric.
+- Acceptance: Clicking overview summary counts filters and navigates to underlying matching records.
+
+## REQ-121: Provide built-in filters for blocked work, failed checks, stale evidence, and implemented-but-unverified requirements.
+- Acceptance: Built-in quick filter pills correctly filter records.
+
+## REQ-122: Enable creating, renaming, deleting, and persisting custom filters locally across sessions.
+- Acceptance: Custom filters persist across sessions and support renaming and deletion.
+
+## REQ-123: Strictly prohibit fabricated build logs; label retrospective notes and empty states clearly.
+- Acceptance: Timeline and logs reflect actual events with clear labeling.
+
+# Phase P22: Parallel-work tracking (Feature J — Deferred Milestone)
+- Phase depends: P16, P21
+
+## REQ-124: Define data model for agent work assignments and active task leases.
+- Acceptance: Specification defines agent work assignments and lease data model.
+
+## REQ-125: Specify conflict detection algorithm for overlapping requirement assignments.
+- Acceptance: Algorithm identifies overlapping requirement assignments across agents.
+
+## REQ-126: Document visibility boundary: ScopeLock observes submitted operations, not uncommitted agent local state.
+- Acceptance: Visibility boundary is explicitly documented as submitted operations only.

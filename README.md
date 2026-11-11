@@ -1,124 +1,279 @@
 # ScopeLock
 
-**One scope. Every phase. Evidence you can inspect.**
+**The seatbelt for AI-assisted building. One agreed scope. Every phase. Evidence you can inspect.**
 
-ScopeLock is a free, local-first open-source project tracker for people building with coding agents. It joins a phase roadmap, requirement checklist, command checks, evidence, logs, and a local graphical dashboard. Adapters for **Antigravity**, **Claude Code**, and **OpenAI Codex** expose the same project state over local MCP.
+ScopeLock is a free, local-first, open-source alignment engine and project tracker for anyone building applications with AI coding agents. It connects your roadmap, requirement checklists, automated test checks, evidence records, and a local graphical dashboard. 
 
-> 📖 **Looking for a step-by-step walkthrough?** Check out the [Complete User Guide](docs/USER_GUIDE.md).  
-> 🔗 **GitHub Repository:** [https://github.com/manoj-nehete/scopelock](https://github.com/manoj-nehete/scopelock)
+Built-in adapters for **Antigravity**, **Claude Code**, and **OpenAI Codex** share the exact same project state over local MCP (Model Context Protocol)—with **₹0 cloud costs**, no subscriptions, and 100% privacy on your own machine.
 
-Version 0.1.0 release candidate. See BUILD_STATUS.md for verified results across macOS, Linux, and Windows.
+> 📖 **Need the in-depth manual?** See the [Complete User Guide](docs/USER_GUIDE.md).  
+> 📋 **Architecture & Roadmap:** See [PLAN.md](PLAN.md) and [BUILD_STATUS.md](BUILD_STATUS.md).  
+> 🔗 **Repository:** [https://github.com/manoj-nehete/scopelock](https://github.com/manoj-nehete/scopelock)
 
-## Requirements
+---
 
-- Node.js 24 or newer and npm.
-- Your existing coding-agent access if using an agent integration.
-- No ScopeLock account, AI API key, cloud server, or database subscription.
+## 💡 Why Every "Vibe Coded" Project Needs ScopeLock
 
-## Install from source
+### What is "Vibe Coding"?
+"Vibe coding" is building real software through conversational AI prompts—describing what you want in plain language and letting models like Claude, Codex, Gemini, or Antigravity write the code. It feels like magic, until...
 
-Extract the source archive, open a terminal in the `scopelock` folder, then run:
+### Why Vibe-Coded Projects Break:
+1. **The "Yes Man" Problem:** AI agents enthusiastically claim *"I've implemented everything and it works perfectly!"* when they haven't actually run or verified the code.
+2. **Premature Leaping:** You ask for a simple login screen, and the AI tries to build a complex payment gateway or dark-mode theme before the database even works.
+3. **Silent Regressions:** The AI fixes a CSS button in Step 5 and accidentally deletes authentication code written in Step 1.
+4. **Context Amnesia:** You switch chat windows, start a new session, or switch between Claude, Cursor, and Codex, and the new AI has no idea what was already verified.
 
+### How ScopeLock Keeps You Safe:
+- 🛡️ **Implementation ≠ Verification:** An AI saying *"I wrote it"* only marks a task as `implemented`. It **never** counts as verified until an actual test runs or you personally attest to it.
+- 🚦 **Sequential Phase Gates:** Phase 2 stays locked until Phase 1's exit criteria actually pass. No jumping ahead.
+- 🔍 **Change-Impact & Drift Tracking:** If your AI modifies a file it shouldn't have touched, ScopeLock immediately flags affected features as `stale` and alerts you.
+- 🤝 **Universal Agent Handoff:** Export a concise Markdown handoff report anytime. Switch from Claude Code to Codex or Antigravity in one click without losing context.
+- 📊 **Honest Visual Dashboard:** A clean, local dashboard showing exactly what's built, what's verified, what's blocked, and whether you're genuinely ready to release.
+
+---
+
+## ⚡ The 3-Step Vibe-Coding Workflow
+
+1. **Write down your ideas in plain English:** List what you want in a simple `requirements.md` file divided into phases.
+2. **Let your AI agent build phase by phase:** Connect ScopeLock to your agent via MCP. The agent reads the active phase, works only on eligible tasks, and runs approved checks.
+3. **Open the dashboard to see reality:** View your 4 overview summaries, see real test outputs, inspect unlinked file drift, and know exactly what to prompt next.
+
+---
+
+## 🚀 The 0 to 100 Command List
+
+Here is your complete reference guide—from first install to advanced release readiness:
+
+### 0. Installation & Setup
 ```sh
+# Clone and enter directory
+git clone https://github.com/manoj-nehete/scopelock.git
+cd scopelock
+
+# Install dependencies and build frontend & backend
 npm ci
 npm run build
+
+# (Optional) Link globally so you can type 'scopelock' anywhere
 npm link
 ```
+*(If global link is restricted on your system, replace `scopelock` with `node /path/to/scopelock/dist/cli.js`)*.
 
-`npm link` installs the local `scopelock` command. If your system restricts global linking, invoke `node /absolute/path/to/scopelock/dist/cli.js` instead; on Windows use your actual Windows path.
+---
 
-## Five-minute example
-
-From the ScopeLock source folder:
-
-```sh
-node examples/setup.mjs ../scopelock-demo
-scopelock --project ../scopelock-demo dashboard
-```
-
-Open the printed address (normally http://127.0.0.1:4317). The example creates five requirements across two phases and four unapproved check definitions. It does not automatically execute them.
-
-1. Click **Requirements**. Open REQ-001 and inspect its criterion. Its verification should say **not checked**.
-2. Click **Checks & logs**. Inspect CHECK-001's command and arguments. Click **Approve command**, then **Run check**. A run should appear, followed by **passed** and its output. PASS means the recorded command succeeded; inspect the output and criterion to judge adequacy.
-3. Run the approved CHECK-002 and CHECK-003 definitions the same way. Phase P01 should show passed verification after all three pass.
-4. Approve and run CHECK-004. Its persistence assertion intentionally fails. The dashboard should show **failed**, with inspectable output. This is a demonstration of accurate failure reporting, not a ScopeLock failure.
-5. Click **Phases** and inspect P02. It must not show passed. REQ-005 also needs a real human keyboard-access check; the example has no task UI and cannot pass that criterion yet.
-6. If a control is missing, confirm you opened the ScopeLock dashboard for the demo root and expanded the relevant check definition. Refresh once; if it is still absent, record the screen label, command output and project root in a bug report. Do not mark the scenario passed.
-
-## Use with your project
+### 1. Starting a Project (0 → 25)
+Get your project organized and lock in your agreed plan.
 
 ```sh
-cd your-project
-scopelock init "My project"
+# Navigate to your project folder
+cd my-cool-app
+
+# 1. Initialize ScopeLock in your project
+scopelock init "My Cool App"
+
+# 2. Import your requirements Markdown file
 scopelock import requirements.md
+
+# 3. View current imported draft scope
 scopelock status
+
+# 4. Lock in your baseline scope (creates Scope Revision 1)
 scopelock confirm
-scopelock dashboard
+
+# 5. Check project health and verify workspace files
+scopelock doctor
 ```
 
-Review the imported list before confirming. Keep `.scopelock` private until you have reviewed its contents for sharing. Add it to your project's .gitignore for private projects; a future team workflow can selectively version agreed scope.
+---
 
-Markdown example:
+### 2. Coding with Agents & Daily Flow (25 → 50)
+Keep coding agents focused on the right task and track progress honestly.
+
+```sh
+# Connect your favorite AI coding agents (sets up local MCP automatically)
+scopelock connect claude-code     # Configures CLAUDE.md & .mcp.json
+scopelock connect codex           # Configures AGENTS.md & .codex/config.toml
+scopelock connect antigravity     # Configures .agents/rules/ & MCP
+
+# Test local agent connection diagnostics
+scopelock probe antigravity
+
+# Get the immediate handoff context (what to do right now)
+scopelock handoff
+
+# Export handoff as Markdown to paste into any new chat or prompt
+scopelock handoff --export handoff.md
+
+# Update a requirement's implementation status
+scopelock update REQ-001 in_progress
+scopelock update REQ-001 implemented
+
+# Mark an item blocked with an explicit reason
+scopelock update REQ-002 blocked "Awaiting third-party API keys"
+```
+
+---
+
+### 3. Verification & Evidence (50 → 75)
+Never accept an agent's claim without proof.
+
+```sh
+# Define a reproducible command check (stored in a JSON file)
+scopelock check define test-check.json
+
+# View all check definitions
+scopelock check
+
+# Explicitly review and approve a check command (security guardrail)
+scopelock check approve CHECK-001
+
+# Run the approved check (records output, exit code, and code fingerprint)
+scopelock check run CHECK-001
+
+# Record a manual human verification (e.g., visual layout or UX check)
+scopelock evidence manual-check.json
+
+# Activate a new phase after dependencies pass (or provide override reason)
+scopelock phase activate P02
+scopelock phase activate P02 "Proceeding with mock database while waiting for staging"
+```
+
+---
+
+### 4. Advanced Alignment, Drift & Release (75 → 100)
+Catch hidden bugs, inspect scope drift, and audit release readiness.
+
+```sh
+# 1. Requirement Coverage Map: see linked files, checks, evidence & gaps
+scopelock coverage
+
+# 2. Dependency Graph: view blockers, prerequisites & eligible-to-start tasks
+scopelock dependencies
+scopelock dependencies --list      # Accessible screen-reader / text format
+
+# 3. Change-Impact Tracking: check if recent edits made previous tests stale
+scopelock impact
+
+# 4. Scope-Drift Review: find unlinked files created by your AI
+scopelock drift
+
+# Link an unlinked file to an existing requirement
+scopelock drift link REQ-001 src/utils.ts
+
+# Document an unlinked file as supporting infrastructure (e.g. config)
+scopelock drift supporting vite.config.ts "Vite frontend build configuration"
+
+# 5. Checkpoints & Progress Comparison: compare milestone progress
+scopelock checkpoint create "v0.1-Alpha" "Baseline before refactor"
+scopelock checkpoint list
+scopelock checkpoint compare CKPT-001 current
+
+# 6. Build Timeline: filter activity by phase, requirement, agent, or date
+scopelock timeline --phase P01
+scopelock timeline --actor claude-code
+scopelock timeline --date 2026-11-11
+
+# 7. Release-Readiness Report: audit blockers, unmet gates & export Markdown
+scopelock readiness
+scopelock readiness --export readiness-report.md
+
+# 8. Manage Saved Filters: create quick search views
+scopelock filters list
+scopelock filters save "Needs Attention" requirements
+
+# 9. Backup & Safety
+scopelock backup my-project-backup.json
+scopelock restore my-project-backup.json
+scopelock recover                  # Recovers from interrupted writes or dead locks
+scopelock logs clear 14            # Keep only the last 14 days of execution logs
+```
+
+---
+
+### 5. The Visual Dashboard
+Prefer a graphical interface? Launch the built-in local dashboard:
+
+```sh
+scopelock dashboard 4317
+```
+Open **http://127.0.0.1:4317** in your browser to inspect:
+- **Overview:** 4 separate summaries (Implementation, Verification, Blockers, Release Readiness) with 1-click drill-downs into matching records.
+- **Phases & Roadmap:** Visual progress bars, prerequisites, and phase activation controls.
+- **Coverage Map:** Clear breakdown of linked files, test checks, and missing evidence.
+- **Dependency Flow:** Interactive cards and accessible text lists showing what's eligible to start.
+- **Impact & Drift:** Instant visibility into modified files and unlinked code created by agents.
+- **Agent Handoff:** 1-click Markdown exporter to continue seamlessly with any AI model.
+- **Checkpoints Diff:** Side-by-side comparison of scope growth vs. real implementation progress.
+- **Readiness Audit:** Actionable blocker checklists before publishing your application.
+
+---
+
+## 📝 Writing Requirements in Plain English
+
+Save this as `requirements.md` in your project root:
 
 ```markdown
-# Phase P01: Foundation
-## REQ-001: Validate a task title
-- Acceptance: Empty titles are rejected.
-# Phase P02: Usability
+# Phase P01: Core Foundations
+- Constraint: Store all data locally on the user machine.
+
+## REQ-001: User Profile Creation
+- Files: src/user.ts, src/types.ts
+- Acceptance (automated): User can be created with valid username and email.
+
+## REQ-002: Password Validation
+- Files: src/auth.ts
+- Acceptance (automated): Passwords shorter than 8 characters are rejected.
+
+# Phase P02: User Experience
 - Phase depends: P01
-## REQ-002: Keyboard access
+
+## REQ-003: Dark Mode Toggle
 - Depends: REQ-001
-- Acceptance (manual): A person can create a task with keyboard-only controls.
+- Files: src/theme.ts
+- Acceptance (manual): User can toggle between dark and light themes smoothly.
 ```
 
-## Commands
+- `# Phase P01: ...` defines a roadmap phase.
+- `## REQ-001: ...` defines a stable requirement ID.
+- `- Files: ...` links the files your AI is expected to edit.
+- `- Acceptance (automated): ...` requires a real command test to pass.
+- `- Acceptance (manual): ...` requires you to confirm it looks good.
+- `- Depends: ...` ensures the AI doesn't start this until prerequisites pass!
 
-Run `scopelock --help` for the complete grammar. All commands accept `--project PATH` before the command.
+---
 
-- `update REQ-001 implemented`: records implementation, never a verification pass.
-- `phase activate P02`: checks dependency verification. An optional reason records an explicit continuation override.
-- `handoff`: active phase, constraints, blockers and next eligible requirement.
-- `check define check.json`, `check approve CHECK-001`, `check run CHECK-001`: review then run a stored command.
-- `scope propose revised.md "reason"`, `scope accept PROP-ID`, `scope reject PROP-ID`: explicit baseline changes.
-- `evidence evidence.json`: human attestation with criterion, result, note and optional artifact path.
-- `report [FILE]`: phase/requirement verification report.
-- `doctor`: state, executables, working directories, evidence and interrupted-run diagnostics.
-- `backup FILE`: portable JSON including copied evidence. Store it outside the tracked project so it does not invalidate the code fingerprint.
-- `restore FILE`: restore into a fresh/empty project.
-- `migrate`: upgrade the earlier schema-v1 preview in place, keeping a legacy backup.
-- `recover`: remove a demonstrably dead same-host lock or restore the previous valid snapshot. A live/foreign/unreadable lock is refused.
-- `logs clear [DAYS]`: clear finished output or apply age retention.
+## 🔒 Privacy, Security & Cost
 
-A check JSON contains `id`, `title`, `criteria` (criterion IDs), `command`, `args`, `cwd` and `timeoutMs`. Definition does not imply approval. A human must review the exact command. Commands execute with your permissions, without a shell. On Windows prefer executable commands such as `node`; shell scripts require an explicitly reviewed shell executable.
+- **₹0 Additional Infrastructure:** Runs 100% on your local machine using Node.js.
+- **Zero Cloud Leakage:** No ScopeLock servers, no telemetry, no tracking cookies, no accounts.
+- **Safe Command Execution:** Agent tools **cannot** execute arbitrary commands without your explicit review and approval in ScopeLock.
+- **Secret Redaction:** Command output logs automatically redact common API keys, passwords, and tokens before storing or streaming.
 
-## Agent setup
+---
 
-```sh
-scopelock connect claude-code
-scopelock connect codex
-scopelock connect antigravity
-scopelock probe codex
-```
+## 🛠️ CLI Cheat-Sheet
 
-See docs/INTEGRATIONS.md for configuration locations, permission steps, and tested-vs-unverified distinctions.
+| Workflow Goal | Command |
+| :--- | :--- |
+| **Start Project** | `scopelock init [NAME]` → `scopelock import FILE` → `scopelock confirm` |
+| **Open GUI** | `scopelock dashboard [PORT]` |
+| **What do I do next?** | `scopelock handoff [--export [FILE]]` |
+| **Connect AI Agents** | `scopelock connect [claude-code \| codex \| antigravity]` |
+| **Test MCP Connection** | `scopelock probe [AGENT]` |
+| **Update Progress** | `scopelock update <REQ-ID> [in_progress \| implemented \| blocked]` |
+| **Review Test Command**| `scopelock check define FILE.json` → `scopelock check approve <ID>` |
+| **Run Real Test** | `scopelock check run <CHECK-ID>` |
+| **Audit Test Coverage**| `scopelock coverage` |
+| **Check Dependencies**| `scopelock dependencies [--list]` |
+| **Did files change?** | `scopelock impact` |
+| **Unlinked AI Code?** | `scopelock drift [link REQ FILE \| supporting FILE REASON]` |
+| **Milestone Diff** | `scopelock checkpoint create NAME` → `scopelock checkpoint compare ID1 [ID2]` |
+| **Release Audit** | `scopelock readiness [--export [FILE]]` |
+| **Activity History** | `scopelock timeline [--phase P --actor A --date D]` |
+| **Health & Safety** | `scopelock doctor` / `scopelock recover` / `scopelock backup FILE` |
 
-## Development
+---
 
-```sh
-npm ci
-npm run build
-npm test
-npm pack --ignore-scripts
-```
+## 📄 License
 
-Backend and dashboard have separate strict TypeScript checks. `npm test` runs the combined-system suite after building. CI defines Windows/macOS/Linux jobs; having a CI file does not mean those jobs have run.
-
-## Accurate status
-
-Implemented, verified, failed and stale mean different things. Check results are tied to scope revision and a conservative whole-project fingerprint. Agent notes do not substitute for human verification. Later code changes can make evidence stale. ScopeLock sees its own commands and submitted events; it does not read every agent conversation or intercept every edit.
-
-The dashboard binds to localhost. It is not designed for public hosting. See SECURITY.md and docs/SPEC.md for boundaries, fingerprint exclusions and recovery limitations.
-
-## Project files
-
-PLAN.md contains all 12 phases. docs/REQUIREMENTS.md maps plan tasks to stable build requirements. BUILD_STATUS.md records actual verification and remaining work. MIT licensed.
+MIT Licensed. Created by Manoj Nehete and ScopeLock contributors.

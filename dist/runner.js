@@ -22,7 +22,7 @@ export async function runCheck(project, id, actor = 'human') {
     const cwd = await within(project.root, check.cwd), fp = await fingerprint(project.root), runId = uid('RUN');
     await project.mutate('check_started', actor, id, s => { if (!s)
         throw Error('Missing project'); const current = s.checks.find(c => c.id === id); if (!current?.approved || JSON.stringify(current) !== JSON.stringify(check))
-        throw Error('Check changed'); s.runs.push({ id: runId, checkId: id, status: 'running', start: now(), fingerprint: fp, scopeRevision: state.scopeRevision, output: '', pid: process.pid, actor }); return s; }, state.revision);
+        throw Error('Check changed'); s.runs.push({ id: runId, checkId: id, status: 'running', start: now(), fingerprint: fp, scopeRevision: state.scopeRevision, output: '', pid: process.pid, actor }); return s; }, state.revision, { checkId: id, runId });
     let raw = '', timedOut = false, cancelled = false;
     const max = 256 * 1024;
     let outputQueue = Promise.resolve();
@@ -49,7 +49,7 @@ export async function runCheck(project, id, actor = 'human') {
     await outputQueue;
     const endFp = await fingerprint(project.root);
     return project.mutate('check_finished', actor, runId, s => { if (!s)
-        throw Error('Missing project'); const r = s.runs.find(r => r.id === runId); r.status = timedOut || error ? 'error' : cancelled ? 'cancelled' : code === 0 ? 'passed' : 'failed'; r.end = now(); r.exitCode = code; r.reason = error || (timedOut ? 'Timed out' : endFp !== fp ? 'Project changed during check; evidence is stale' : undefined); return s; });
+        throw Error('Missing project'); const r = s.runs.find(r => r.id === runId); r.status = timedOut || error ? 'error' : cancelled ? 'cancelled' : code === 0 ? 'passed' : 'failed'; r.end = now(); r.exitCode = code; r.reason = error || (timedOut ? 'Timed out' : endFp !== fp ? 'Project changed during check; evidence is stale' : undefined); return s; }, undefined, { checkId: id, runId, result: timedOut || error ? 'error' : cancelled ? 'cancelled' : code === 0 ? 'passed' : 'failed' });
 }
 export function cancelRun(id) { const child = children.get(id); if (!child)
     throw Error('Run is owned by another process or already finished'); terminate(child); return { cancelled: id }; }

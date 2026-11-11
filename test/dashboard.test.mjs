@@ -5,7 +5,10 @@ test('built React dashboard renders all eight views and a requirement detail',as
  const name=(await readdir('web-dist/assets')).find(n=>n.endsWith('.js'));w.eval(await readFile(join('web-dist/assets',name),'utf8'));
  const wait=async(predicate)=>{for(let i=0;i<100;i++){if(predicate())return;await new Promise(r=>setTimeout(r,10));}throw Error('Timed out waiting for dashboard');};
  await wait(()=>w.document.querySelector('nav'));assert.match(w.document.body.textContent,/A clear view of your build/);
- const views=['Overview','Phases','Requirements','Checks & logs','Evidence','Activity','Scope review','Integrations'];for(const view of views){const b=[...w.document.querySelectorAll('nav button')].find(b=>b.textContent.includes(view));assert.ok(b);b.click();await wait(()=>w.document.querySelector('h1')?.textContent===(view==='Overview'?'A clear view of your build.':view));}
- [...w.document.querySelectorAll('nav button')].find(b=>b.textContent.includes('Requirements')).click();await wait(()=>w.document.querySelector('table'));[...w.document.querySelectorAll('table button')][0].click();await wait(()=>w.document.querySelector('.detail'));assert.match(w.document.querySelector('.detail').textContent,/REQ-001-AC1/);assert.deepEqual(errors,[]);
+ const views=['Overview','Phases','Requirements','Checks & logs','Evidence','Activity','Scope review','Integrations','Coverage','Dependencies','Impact & Drift','Handoff','Checkpoints','Readiness'];for(const view of views){const b=[...w.document.querySelectorAll('nav button')].find(b=>b.textContent.includes(view));assert.ok(b);b.click();await wait(()=>w.document.querySelector('h1')?.textContent===(view==='Overview'?'A clear view of your build.':view));}
+ [...w.document.querySelectorAll('nav button')].find(b=>b.textContent.includes('Requirements')).click();await wait(()=>w.document.querySelector('table'));[...w.document.querySelectorAll('table button')][0].click();await wait(()=>w.document.querySelector('.detail'));assert.match(w.document.querySelector('.detail').textContent,/REQ-001-AC1/);
+ // Verify 4 overview summaries click navigation
+ [...w.document.querySelectorAll('nav button')].find(b=>b.textContent.includes('Overview')).click();await wait(()=>w.document.querySelector('.summary-card'));assert.equal(w.document.querySelectorAll('.summary-card').length,4);
+ assert.deepEqual(errors,[]);
  }finally{dom?.window.close();await rm(root,{recursive:true,force:true});}
 });

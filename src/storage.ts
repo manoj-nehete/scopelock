@@ -6,14 +6,14 @@ export class Store{
  root:string;dir:string;constructor(root:string){this.root=resolve(root);this.dir=join(this.root,'.scopelock');}
  async read(){return validate(JSON.parse(await readFile(join(this.dir,'state.json'),'utf8')));}
  async writeAtomic(path:string,value:unknown){const tmp=path+'.'+randomUUID()+'.tmp';const f=await open(tmp,'wx',0o600);try{await f.writeFile(JSON.stringify(value,null,2)+'\n');await f.sync();}finally{await f.close();}try{await rename(tmp,path);}finally{await rm(tmp,{force:true});}}
- async mutate(type:string,actor:string,detail:string,fn:(s:State|null)=>State|Promise<State>,expected?:number){
+ async mutate(type:string,actor:string,detail:string,fn:(s:State|null)=>State|Promise<State>,expected?:number,extra?:Record<string,any>){
  await mkdir(this.dir,{recursive:true});const lockPath=join(this.dir,'write.lock');let lock;
  for(let i=0;i<40;i++){try{lock=await open(lockPath,'wx',0o600);break;}catch(e:any){if(e.code!=='EEXIST')throw e;if(i===39)throw Error('Project is locked. Run doctor; recover only after the owner has stopped.');await new Promise(r=>setTimeout(r,50));}}
  if(!lock)throw Error('Could not lock project');await lock.writeFile(JSON.stringify({pid:process.pid,host:hostname(),time:now()}));
  try{let before:State|null=null;try{before=await this.read();}catch(e:any){if(e.code!=='ENOENT')throw e;}
  if(expected!==undefined&&before?.revision!==expected)throw Error('Revision conflict: reload before editing');
  const next=await fn(before?structuredClone(before):null);next.revision=(before?.revision??-1)+1;
- next.events.push({id:uid('EV'),revision:next.revision,time:now(),type,actor,detail});validate(next);
+ next.events.push({id:uid('EV'),revision:next.revision,time:now(),type,actor,detail,...(extra??{})});validate(next);
  // A previous valid snapshot makes interrupted/corrupt-state recovery explicit.
  if(before)await this.writeAtomic(join(this.dir,'previous.json'),before);
  await this.writeAtomic(join(this.dir,'state.json'),next);return next;

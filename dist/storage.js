@@ -22,7 +22,7 @@ export class Store {
     finally {
         await rm(tmp, { force: true });
     } }
-    async mutate(type, actor, detail, fn, expected) {
+    async mutate(type, actor, detail, fn, expected, extra) {
         await mkdir(this.dir, { recursive: true });
         const lockPath = join(this.dir, 'write.lock');
         let lock;
@@ -55,7 +55,7 @@ export class Store {
                 throw Error('Revision conflict: reload before editing');
             const next = await fn(before ? structuredClone(before) : null);
             next.revision = (before?.revision ?? -1) + 1;
-            next.events.push({ id: uid('EV'), revision: next.revision, time: now(), type, actor, detail });
+            next.events.push({ id: uid('EV'), revision: next.revision, time: now(), type, actor, detail, ...(extra ?? {}) });
             validate(next);
             // A previous valid snapshot makes interrupted/corrupt-state recovery explicit.
             if (before)

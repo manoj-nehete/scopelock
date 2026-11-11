@@ -34,7 +34,84 @@ try {
             result = args[0] === 'activate' ? await p.activate(args[1], args.slice(2).join(' ') || undefined) : (await p.view()).phases;
             break;
         case 'handoff':
-            result = await p.handoff();
+            if (args[0] === '--export') {
+                const h = await p.handoff();
+                if (args[1])
+                    await writeFile(resolve(root, args[1]), h.markdown);
+                else
+                    process.stdout.write(h.markdown);
+                result = args[1] ? { saved: args[1] } : undefined;
+            }
+            else
+                result = await p.handoff();
+            break;
+        case 'coverage':
+            result = await p.coverage();
+            break;
+        case 'dependencies':
+            result = args[0] === '--list' ? (await p.dependencyGraph()).accessibleList : await p.dependencyGraph();
+            break;
+        case 'impact':
+            result = await p.changeImpact();
+            break;
+        case 'drift':
+            if (args[0] === 'link')
+                result = await p.linkFileToRequirement(args[1], args[2]);
+            else if (args[0] === 'supporting')
+                result = await p.addSupportingFile(args[1], args.slice(2).join(' '));
+            else
+                result = await p.scopeDrift();
+            break;
+        case 'checkpoint':
+            if (args[0] === 'create')
+                result = await p.createCheckpoint(args[1] || 'Checkpoint', args.slice(2).join(' '));
+            else if (args[0] === 'compare')
+                result = await p.compareCheckpoints(args[1], args[2] || 'current');
+            else
+                result = await p.listCheckpoints();
+            break;
+        case 'readiness':
+            if (args[0] === '--export') {
+                const r = await p.exportReadinessReport();
+                if (args[1])
+                    await writeFile(resolve(root, args[1]), r);
+                else
+                    process.stdout.write(r);
+                result = args[1] ? { saved: args[1] } : undefined;
+            }
+            else
+                result = await p.releaseReadiness();
+            break;
+        case 'timeline': {
+            const tf = {};
+            for (let i = 0; i < args.length; i++) {
+                if (args[i] === '--phase')
+                    tf.phase = args[++i];
+                else if (args[i] === '--req')
+                    tf.requirement = args[++i];
+                else if (args[i] === '--actor')
+                    tf.actor = args[++i];
+                else if (args[i] === '--type')
+                    tf.type = args[++i];
+                else if (args[i] === '--result')
+                    tf.result = args[++i];
+                else if (args[i] === '--date')
+                    tf.date = args[++i];
+                else if (args[i] === '--query')
+                    tf.query = args[++i];
+            }
+            result = await p.timeline(tf);
+            break;
+        }
+        case 'filters':
+            if (args[0] === 'save')
+                result = await p.saveFilter({ name: args[1], target: args[2], query: args[3] });
+            else if (args[0] === 'delete')
+                result = await p.deleteFilter(args[1]);
+            else if (args[0] === 'rename')
+                result = await p.renameFilter(args[1], args[2]);
+            else
+                result = (await p.view()).savedFilters;
             break;
         case 'scope':
             if (args[0] === 'propose')
@@ -120,7 +197,7 @@ try {
         case '--help':
         case 'help':
         default:
-            console.log('ScopeLock 0.1.0\nUsage: scopelock [--project PATH] COMMAND\ninit | import FILE | confirm | status | requirements | update ID STATUS [REASON]\nphase [activate ID [OVERRIDE_REASON]] | handoff\nscope [propose FILE REASON | accept ID | reject ID]\ncheck [define FILE.json | approve ID | run ID] | evidence FILE.json\ndoctor | recover | migrate | backup FILE | restore FILE | report [FILE] | logs [clear [DAYS]]\nconnect AGENT | disconnect AGENT | probe AGENT | mcp [AGENT] | dashboard [PORT]');
+            console.log('ScopeLock 0.1.0\nUsage: scopelock [--project PATH] COMMAND\ninit | import FILE | confirm | status | requirements | update ID STATUS [REASON]\nphase [activate ID [OVERRIDE_REASON]] | handoff [--export [FILE]]\ncoverage | dependencies [--list] | impact | drift [link REQ FILE | supporting FILE REASON]\ncheckpoint [create NAME [NOTE] | compare ID1 [ID2] | list] | readiness [--export [FILE]]\ntimeline [--phase P --req R --actor A --date D] | filters [save | delete | rename | list]\nscope [propose FILE REASON | accept ID | reject ID]\ncheck [define FILE.json | approve ID | run ID] | evidence FILE.json\ndoctor | recover | migrate | backup FILE | restore FILE | report [FILE] | logs [clear [DAYS]]\nconnect AGENT | disconnect AGENT | probe AGENT | mcp [AGENT] | dashboard [PORT]');
             if (command && command !== '--help' && command !== 'help')
                 process.exitCode = 1;
     }

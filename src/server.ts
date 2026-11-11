@@ -13,6 +13,16 @@ export async function dashboard(p:Project,port=4317){
  if(req.method==='GET'&&url.pathname==='/api/events'){res.writeHead(200,{'Content-Type':'text/event-stream','Connection':'keep-alive'});res.write('data: '+JSON.stringify(await p.view())+'\n\n');clients.add(res);req.on('close',()=>clients.delete(res));return;}
  if(req.method==='GET'&&url.pathname==='/api/artifact'){const e=(await p.read()).evidence.find(e=>e.id===url.searchParams.get('id'));if(!e?.artifact)throw Error('Artifact not found');const bytes=await readFile(await within(p.root,e.artifact));res.writeHead(200,{'Content-Type':'application/octet-stream','Content-Disposition':'attachment; filename="'+e.id+'"'});res.end(bytes);return;}
  if(req.method==='GET'&&url.pathname==='/api/report'){res.writeHead(200,{'Content-Type':'text/markdown','Content-Disposition':'attachment; filename="scopelock-report.md"'});res.end(await p.report());return;}
+ if(req.method==='GET'&&url.pathname==='/api/coverage'){json(await p.coverage());return;}
+ if(req.method==='GET'&&url.pathname==='/api/dependencies'){json(await p.dependencyGraph());return;}
+ if(req.method==='GET'&&url.pathname==='/api/impact'){json(await p.changeImpact());return;}
+ if(req.method==='GET'&&url.pathname==='/api/drift'){json(await p.scopeDrift());return;}
+ if(req.method==='GET'&&url.pathname==='/api/readiness'){json(await p.releaseReadiness());return;}
+ if(req.method==='GET'&&url.pathname==='/api/readiness/report'){res.writeHead(200,{'Content-Type':'text/markdown','Content-Disposition':'attachment; filename="release-readiness-report.md"'});res.end(await p.exportReadinessReport());return;}
+ if(req.method==='GET'&&url.pathname==='/api/handoff'){json(await p.handoff());return;}
+ if(req.method==='GET'&&url.pathname==='/api/checkpoints'){json(await p.listCheckpoints());return;}
+ if(req.method==='GET'&&url.pathname==='/api/checkpoints/compare'){const from=url.searchParams.get('from')??'',to=url.searchParams.get('to')??'current';json(await p.compareCheckpoints(from,to));return;}
+ if(req.method==='GET'&&url.pathname==='/api/timeline'){const q=(name:string)=>url.searchParams.get(name)??undefined;json(await p.timeline({phase:q('phase'),requirement:q('requirement'),actor:q('actor'),type:q('type'),result:q('result'),date:q('date'),query:q('query')}));return;}
  if(req.method==='POST'&&url.pathname==='/api/action'){
  if(req.headers['x-scopelock-token']!==token||req.headers['content-type']!=='application/json'){json({error:'Invalid local session'},403);return;}
  let body='';for await(const b of req){body+=b;if(body.length>2*1024*1024)throw Error('Request too large');}const a=JSON.parse(body);let result:any;
@@ -32,6 +42,13 @@ export async function dashboard(p:Project,port=4317){
  case 'probe':result=await probe(p,a.agent);break;
  case 'clearLogs':result=await clearLogs(p,a.days);break;
  case 'doctor':result=await p.doctor();break;
+ case 'checkpoint':result=await p.createCheckpoint(a.name,a.note);break;
+ case 'compareCheckpoints':result=await p.compareCheckpoints(a.fromId,a.toId);break;
+ case 'saveFilter':result=await p.saveFilter(a.filter);break;
+ case 'deleteFilter':result=await p.deleteFilter(a.id);break;
+ case 'renameFilter':result=await p.renameFilter(a.id,a.name);break;
+ case 'linkFile':result=await p.linkFileToRequirement(a.requirement,a.file);break;
+ case 'addSupportingFile':result=await p.addSupportingFile(a.file,a.reason);break;
  default:throw Error('Unknown action');}
  await refresh();json({ok:true,result});return;
  }
